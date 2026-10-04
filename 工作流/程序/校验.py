@@ -16,6 +16,8 @@ P2（写数据）→ P3（生成）之间必须过本闸：任一不过即 FAIL�
   ④ photo_props rows[].b 在闭集（ink/green/gold）
   ⑤ 引用的图片文件在 <项目>/素材/ 存在
   ⑥ --主题：主题卡存在；主题令牌逐个在 CSS 存在（定案 D1）
+  ⑦ _选型一致性（选型规约）：_选型必填；意图在闭集内；候选=映射[意图]；
+     选中=tpl 且在候选中；理由非空
 退出码: 0=PASS；1=FAIL；2=参数错；3=异常
 """
 import argparse, io, os, sys
@@ -82,6 +84,30 @@ def main():
                 for f in tr["steps必填"]:
                     if f not in s:
                         errors.append("%s steps[%d] 缺 %r" % (tag, j, f))
+        # ---- ⑦ 选型一致性（选型规约）：_选型必填；意图在闭集内；
+        # 候选必须严格等于映射[意图]；选中必须等于 tpl 且在候选中；理由非空
+        sel = p.get("_选型")
+        if not isinstance(sel, dict):
+            errors.append("%s 缺 _选型记录（P0 选型未留痕）" % tag)
+        else:
+            sel_rules = read_json(os.path.join(RULES_DIR, "选型规约.json"))
+            intent = sel.get("意图")
+            if intent not in sel_rules["意图闭集"]:
+                errors.append("%s _选型.意图=%r 非法，闭集为 %s"
+                              % (tag, intent, sel_rules["意图闭集"]))
+            else:
+                want = sel_rules["映射"][intent]
+                got = sel.get("候选")
+                if not isinstance(got, list) or sorted(got) != sorted(want):
+                    errors.append("%s _选型.候选=%r 与选型规约映射[%s]=%r 不一致"
+                                  % (tag, got, intent, want))
+            if sel.get("选中") != tpl:
+                errors.append("%s _选型.选中=%r 必须等于 tpl=%r"
+                              % (tag, sel.get("选中"), tpl))
+            elif sel.get("选中") not in (sel.get("候选") or []):
+                errors.append("%s _选型.选中=%r 不在候选中" % (tag, sel.get("选中")))
+            if not (isinstance(sel.get("理由"), str) and sel.get("理由").strip()):
+                errors.append("%s _选型.理由为空" % tag)
 
     # ---- ⑥ 主题 ----
     if a.主题:
