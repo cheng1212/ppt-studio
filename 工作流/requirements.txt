@@ -2,3 +2,6 @@
 # 安装: pip install -r requirements.txt
 # 截图另需浏览器: python -m playwright install chromium
 playwright>=1.40
+python-pptx>=1.0  # 导出 PPTX（原生可编辑）：程序待建，整篇 HTML 过审后再写
+svgwrite>=1.4     # 程序/svg.py：主题感知的 SVG 图元（流程图技能）
+Pillow>=11        # 程序/img.py：素材图片处理（缩放/裁剪/格式转换）

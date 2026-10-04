@@ -13,7 +13,10 @@ P2（写数据）→ P3（生成）之间必须过本闸：任一不过即 FAIL�
   ① 条目通用必填（id/tpl）齐
   ② tpl 在闭集内（未知页型即拒）
   ③ 该 tpl 的必填字段齐（按 卡型规约·页面条目）
-  ④ photo_props rows[].b 在闭集（ink/green/gold）
+  ④ photo_props rows[].b 在闭集（ink/green/gold）；
+     table_compare 列数/行数范围 + 行列对齐；
+     flow_branch root/branches 结构 + 2–4 分支；
+     flow_cycle nodes 3–6 + edges from/to 命中 nodes
   ⑤ 引用的图片文件在 <项目>/素材/ 存在
   ⑥ --主题：主题卡存在；主题令牌逐个在 CSS 存在（定案 D1）
   ⑦ _选型一致性（选型规约）：_选型必填；意图在闭集内；候选=映射[意图]；
@@ -84,6 +87,39 @@ def main():
                 for f in tr["steps必填"]:
                     if f not in s:
                         errors.append("%s steps[%d] 缺 %r" % (tag, j, f))
+        if tpl == "table_compare":
+            cols = p.get("cols", [])
+            if not isinstance(cols, list) or not (2 <= len(cols) <= 6):
+                errors.append("%s cols 须为 2–6 列的字符串数组" % tag)
+            rows = p.get("rows", [])
+            if not isinstance(rows, list) or not (2 <= len(rows) <= 8):
+                errors.append("%s rows 须为 2–8 行" % tag)
+            for j, r in enumerate(rows if isinstance(rows, list) else []):
+                if not isinstance(r, list) or len(r) != len(cols):
+                    errors.append("%s rows[%d] 列数须等于 cols 长度(%d)"
+                                  % (tag, j, len(cols)))
+        if tpl == "flow_branch":
+            root = p.get("root", {})
+            for f in tr.get("root必填", []):
+                if f not in root:
+                    errors.append("%s root 缺 %r" % (tag, f))
+            brs = p.get("branches", [])
+            if not isinstance(brs, list) or not (2 <= len(brs) <= 4):
+                errors.append("%s branches 须为 2–4 项" % tag)
+            for j, b in enumerate(brs if isinstance(brs, list) else []):
+                for f in tr.get("branches必填", []):
+                    if f not in b:
+                        errors.append("%s branches[%d] 缺 %r" % (tag, j, f))
+        if tpl == "flow_cycle":
+            nodes = p.get("nodes", [])
+            if not isinstance(nodes, list) or not (3 <= len(nodes) <= 6):
+                errors.append("%s nodes 须为 3–6 项" % tag)
+            for j, e in enumerate(p.get("edges", [])):
+                for f in tr.get("edges必填", []):
+                    if f not in e:
+                        errors.append("%s edges[%d] 缺 %r" % (tag, j, f))
+                if e.get("from") not in nodes or e.get("to") not in nodes:
+                    errors.append("%s edges[%d] from/to 须命中 nodes" % (tag, j))
         # ---- ⑦ 选型一致性（选型规约）：_选型必填；意图在闭集内；
         # 候选必须严格等于映射[意图]；选中必须等于 tpl 且在候选中；理由非空
         sel = p.get("_选型")

@@ -4,6 +4,8 @@
 用法:
   python page.py                 # 按 pages.json 重新生成全部 HTML
   python page.py P4              # 只生成指定页 id
+  python page.py --预览 草案.json [预览目录]
+                                 # 布局预览：渲染草案数据到 页/_预览/，不碰 pages.json
 
 布局模板（对应库内页型卡）:
   cover        封面（满版图压字）
@@ -11,12 +13,16 @@
   section      章节页（深底 ghost 编号）
   photo_props  图文性质页（左图右色块标签行 + 结论条）
   photo_chain  图文因果页（左图右编号链 + 提示框）
+  table_compare 对比表页（多对象横向对比 + 结论条）
+  flow_branch  分支流程图（同一起点 → 条件分支 → 不同结果）
+  flow_cycle   循环关系图（节点环形排布 + 带标签箭头）
 """
 import io, json, os, sys
 import html as _html
 import re as _re
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from 基座 import FAIL, read_json, die, project_dir, theme_css_path
+from 基座 import FAIL, USAGE, read_json, die, project_dir, theme_css_path
+from svg import fork as svg_fork, cycle as svg_cycle
 
 # 主题 CSS 内联（file:// 下中文目录外链 CSS 会被 Chromium 跨源拦截）。
 # 主题可切换：环境变量 PPT_THEME_CSS（相对 库/），默认 theme-sodium.css。
@@ -241,17 +247,151 @@ def t_photo_chain(p):
     return h + b
 
 
+# ---------- 模板:对比表页(多对象横向对比+结论条) ----------
+def t_table_compare(p):
+    extra = """
+  .twrap{position:absolute;left:var(--mx);top:352px;width:1680px}
+  table{width:100%;border-collapse:collapse}
+  th{background:var(--green);color:#F5F3ED;font-size:24px;font-weight:700;
+     letter-spacing:.14em;padding:20px 28px;text-align:left}
+  td{font-size:24px;color:var(--ink);letter-spacing:.04em;line-height:1.6;
+     padding:20px 28px;border-bottom:1px solid var(--line);vertical-align:top}
+  td.c0{color:var(--green);font-weight:800;white-space:nowrap}
+  td em{font-style:normal;color:var(--green)}
+  td b{color:var(--gold)}
+  .concl{margin-top:30px}
+"""
+    h = HEAD.format(theme=THEME, extra=extra, bodycls="")
+    ths = "".join(f"<th>{esc(c)}</th>" for c in p["cols"])
+    trs = ""
+    for r in p["rows"]:
+        tds = "".join(
+            f'<td class="c0">{esc(c)}</td>' if i == 0 else f"<td>{esc(c)}</td>"
+            for i, c in enumerate(r))
+        trs += f"    <tr>{tds}</tr>\n"
+    b = f"""  <div class="brow">{esc(p['brow'])}</div><div class="pageno">{esc(p['no'])}</div>
+  <div class="head"><div class="kick">{esc(p['kick'])}</div>
+    <h1>{esc(p['title'])}</h1></div>
+  <div class="twrap"><table>
+    <tr>{ths}</tr>
+{trs}  </table>
+    <div class="concl concl">{esc(p['concl'])}</div>
+  </div>
+  <div class="foot-line"></div>
+  <div class="foot">{esc(p['foot'])}</div>
+</body>
+</html>
+"""
+    return h + b
+
+
+# ---------- 模板:分支流程图(同一起点→条件分支→不同结果) ----------
+def t_flow_branch(p):
+    n = len(p["branches"])
+    bw, gap = 520, 60
+    total = bw * n + gap * (n - 1)
+    off = (1680 - total) / 2
+    cxs = [off + bw / 2 + i * (bw + gap) for i in range(n)]
+    fork_svg = svg_fork(cxs)  # 分叉线走 程序/svg.py 图元
+    extra = """
+  .twrap{position:absolute;left:var(--mx);top:340px;width:1680px}
+  .root{margin:0 auto;width:520px;background:var(--green);color:#F5F3ED;
+        text-align:center;padding:26px 30px}
+  .root .t{font-size:30px;font-weight:800;letter-spacing:.06em}
+  .root .d{margin-top:8px;font-size:19px;opacity:.85;letter-spacing:.04em}
+  .forkrow{display:flex;justify-content:center;gap:60px}
+  .branch{width:520px;flex:none;background:var(--card);outline:1px solid var(--line);
+          padding:30px 34px}
+  .cond{display:inline-block;background:var(--gold);color:var(--ink);font-weight:800;
+        font-size:22px;letter-spacing:.14em;padding:10px 26px}
+  .res{margin-top:16px;font-size:40px;color:var(--green);font-weight:800;letter-spacing:.04em}
+  .bd{margin-top:10px;font-size:20px;color:var(--muted);line-height:1.7}
+  .concl{margin-top:30px}
+"""
+    h = HEAD.format(theme=THEME, extra=extra, bodycls="")
+    brs = ""
+    for b in p["branches"]:
+        brs += (f'    <div class="branch"><div class="cond">{esc(b["cond"])}</div>\n'
+                f'      <div class="res">{esc(b["result"])}</div>\n'
+                f'      <div class="bd">{esc(b["d"])}</div></div>\n')
+    b = f"""  <div class="brow">{esc(p['brow'])}</div><div class="pageno">{esc(p['no'])}</div>
+  <div class="head"><div class="kick">{esc(p['kick'])}</div>
+    <h1>{esc(p['title'])}</h1></div>
+  <div class="twrap">
+    <div class="root"><div class="t">{esc(p['root']['t'])}</div>
+      <div class="d">{esc(p['root']['d'])}</div></div>
+    {fork_svg}
+    <div class="forkrow">
+{brs}    </div>
+    <div class="concl concl">{esc(p['concl'])}</div>
+  </div>
+  <div class="foot-line"></div>
+  <div class="foot">{esc(p['foot'])}</div>
+</body>
+</html>
+"""
+    return h + b
+
+
+# ---------- 模板:循环关系图(节点环形排布+带标签箭头) ----------
+def t_flow_cycle(p):
+    svg = svg_cycle(p["nodes"], p["edges"])  # 环形图走 程序/svg.py 图元
+    extra = """
+  .twrap{position:absolute;left:var(--mx);top:340px;width:1680px}
+  .concl{margin-top:8px}
+"""
+    h = HEAD.format(theme=THEME, extra=extra, bodycls="")
+    b = f"""  <div class="brow">{esc(p['brow'])}</div><div class="pageno">{esc(p['no'])}</div>
+  <div class="head"><div class="kick">{esc(p['kick'])}</div>
+    <h1>{esc(p['title'])}</h1></div>
+  <div class="twrap">{svg}
+    <div class="concl concl">{esc(p['concl'])}</div>
+  </div>
+  <div class="foot-line"></div>
+  <div class="foot">{esc(p['foot'])}</div>
+</body>
+</html>
+"""
+    return h + b
+
+
 TEMPLATES = {
     "cover": t_cover,
     "toc_grid": t_toc_grid,
     "section": t_section,
     "photo_props": t_photo_props,
     "photo_chain": t_photo_chain,
+    "table_compare": t_table_compare,
+    "flow_branch": t_flow_branch,
+    "flow_cycle": t_flow_cycle,
 }
 
 
 def main():
-    only = sys.argv[1] if len(sys.argv) > 1 else None
+    argv = sys.argv[1:]
+    if argv and argv[0] == "--预览":
+        # 布局预览模式：python 页面生成.py --预览 草案.json [预览目录]
+        # 草案.json 为单个页面 dict 或 list；只渲染布局，不管最终文案；
+        # 不碰 pages.json，HTML 输出到 <项目>/页/_预览/。
+        if len(argv) < 2:
+            die("用法: python 页面生成.py --预览 <草案.json> [预览目录]", code=USAGE)
+        proj = project_dir()
+        drafts = read_json(argv[1])
+        if isinstance(drafts, dict):
+            drafts = [drafts]
+        outdir = (argv[2] if len(argv) > 2
+                  else os.path.join(proj, "页", "_预览"))
+        os.makedirs(outdir, exist_ok=True)
+        for p in drafts:
+            if p["tpl"] not in TEMPLATES:
+                die("未知页型 tpl=%r，合法取值为: %s"
+                    % (p["tpl"], sorted(TEMPLATES)), code=FAIL)
+            html = TEMPLATES[p["tpl"]](p)
+            out = os.path.join(outdir, p["id"] + ".html")
+            io.open(out, "w", encoding="utf-8").write(html)
+            print("预览", out)
+        return
+    only = argv[0] if argv else None
     proj = project_dir()
     print("项目:", proj)
     print("主题:", theme_css_path())

@@ -22,7 +22,14 @@ def main():
         sys.exit(USAGE)
 
     with sync_playwright() as p:
-        b = p.chromium.launch()
+        # 先试 Playwright 自带 chromium；没装则回落到系统 chromium
+        try:
+            b = p.chromium.launch()
+        except Exception:
+            exe = "/opt/meta-chromium/chrome"
+            if not os.path.isfile(exe):
+                raise
+            b = p.chromium.launch(executable_path=exe)
         pg = b.new_page(viewport={"width": 1920, "height": 1080}, device_scale_factor=1)
         for html in targets:
             pg.goto("file:///" + os.path.abspath(html).replace("\\", "/"))
