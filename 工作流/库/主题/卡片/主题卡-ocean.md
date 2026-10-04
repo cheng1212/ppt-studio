@@ -41,6 +41,11 @@
 - 中文：Microsoft YaHei / PingFang SC；英文眉题/数字：Georgia serif（混排）
 - 字号阶同 sodium（16:9 @1920）：页标题 62px / 章节标题 118px / 正文 29px
 
+## 间距
+
+- 页边距 --mx: 120px
+- 页头起始 --head-top: 126px
+
 ## 页眉页脚系统
 
 同 sodium：左 brow + 右 pageno（top 60px）；发丝线 + 右注 foot（bottom 50/64px）
