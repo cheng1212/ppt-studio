@@ -13,10 +13,10 @@
   photo_chain  图文因果页（左图右编号链 + 提示框）
 """
 import io, json, os, sys
+import html as _html
+import re as _re
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from 基座 import OK, FAIL, USAGE, ERR, read_json, die, project_dir, theme_css_path, WORKFLOW
-
-HERE = os.path.dirname(os.path.abspath(__file__))
+from 基座 import FAIL, read_json, die, project_dir, theme_css_path
 
 # 主题 CSS 内联（file:// 下中文目录外链 CSS 会被 Chromium 跨源拦截）。
 # 主题可切换：环境变量 PPT_THEME_CSS（相对 库/），默认 theme-sodium.css。
@@ -37,7 +37,16 @@ HEAD = """<!DOCTYPE html>
 
 
 def esc(s):
-    return s  # 内容自信，不做转义（内部数据）
+    """数据只写纯文本；转义由程序做，白名单行内标签放行。
+
+    页型卡允许的行内标签：<span class="q">（标题半句标绿）、
+    <b>（结论/提示标金）、<em>（要点标绿）。其他 <>& 原样转义。
+    """
+    e = _html.escape(s, quote=False)
+    for tag in ("span", "b", "em"):
+        e = _re.sub(r"&lt;(%s)(\s[^&<>]*)?&gt;" % tag, r"<\1\2>", e)
+        e = e.replace("&lt;/%s&gt;" % tag, "</%s>" % tag)
+    return e
 
 
 def img(name):

@@ -1,12 +1,12 @@
 [
   {"id":"P1-封面","tpl":"cover",
-   "bg":"na-wide.png","eyebrow":"Sodium &amp; Its Compounds","title":"钠及其化合物",
+   "bg":"na-wide.png","eyebrow":"Sodium & Its Compounds","title":"钠及其化合物",
    "en":"SODIUM · 活性之源","sub":"从活泼金属到多彩化合物 · 探索钠元素的化学世界",
    "foot":"高中化学 · 元素化合物专题","corner":"Na 11"},
 
   {"id":"P2-目录","tpl":"toc_grid",
    "brow":"Chemistry · Chapter","no":"02 / 18","title":"学习导航",
-   "sub":"从认识钠元素，到掌握化合物的性质与应用","en":"Sodium &amp; Its Compounds · Learning Path",
+   "sub":"从认识钠元素，到掌握化合物的性质与应用","en":"Sodium & Its Compounds · Learning Path",
    "foot":"五个学习任务 · 一条「性质—转化—应用」主线",
    "cards":[
      {"no":"01 / DISCOVER","zh":"认识金属钠","desc":"物理性质 · 原子结构 · 保存方法","img":"na-cube.png","contain":true},
