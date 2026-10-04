@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""千问 dashscope 文生图（异步任务轮询）。用法: python qwen_gen.py --prompt "..." --out out.png"""
+"""千问 dashscope 文生图（异步任务轮询）。用法: python 千问生图.py --prompt "..." --out out.png"""
 import argparse, base64, json, os, sys, time, urllib.request
 
 # 跨平台 key 查找：环境变量 ZCODE_CONFIG > ~/.zcode/v2/config.json > 旧 Windows 路径
