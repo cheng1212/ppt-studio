@@ -6,7 +6,7 @@
 """
 import sys, os, glob
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from 基座 import OK, FAIL, USAGE, ERR
+from 基座 import USAGE
 from playwright.sync_api import sync_playwright
 
 
