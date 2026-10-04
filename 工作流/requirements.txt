@@ -1,0 +1,4 @@
+# ppt-studio 工作流 · Python 依赖
+# 安装: pip install -r requirements.txt
+# 截图另需浏览器: python -m playwright install chromium
+playwright>=1.40

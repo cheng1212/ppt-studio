@@ -1,6 +1,20 @@
 # -*- coding: utf-8 -*-
 """千问 dashscope 文生图（异步任务轮询）。用法: python qwen_gen.py --prompt "..." --out out.png"""
-import argparse, base64, json, time, urllib.request
+import argparse, base64, json, os, sys, time, urllib.request
+
+# 跨平台 key 查找：环境变量 ZCODE_CONFIG > ~/.zcode/v2/config.json > 旧 Windows 路径
+def _load_zcode_config():
+    import io
+    cands = []
+    if os.environ.get("ZCODE_CONFIG"):
+        cands.append(os.environ["ZCODE_CONFIG"])
+    cands.append(os.path.join(os.path.expanduser("~"), ".zcode", "v2", "config.json"))
+    cands.append(r"C:\Users\chengge\.zcode\v2\config.json")  # 旧 Windows 路径兜底
+    for p in cands:
+        if p and os.path.isfile(p):
+            return json.load(io.open(p, encoding="utf-8"))
+    raise SystemExit("ERR: 找不到 ZCode 配置（已尝试: %s）。可设环境变量 ZCODE_CONFIG 指定路径。"
+                     % "；".join(cands))
 
 def main():
     ap = argparse.ArgumentParser()
@@ -9,7 +23,7 @@ def main():
     ap.add_argument("--model", default="qwen-image-3.0")
     ap.add_argument("--size", default="1664*928")
     a = ap.parse_args()
-    key = json.load(open(r"C:\Users\chengge\.zcode\v2\config.json", encoding="utf-8"))
+    key = _load_zcode_config()
     # 从 provider 段取 key
     def find_key(o):
         if isinstance(o, dict):

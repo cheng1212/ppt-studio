@@ -2,7 +2,7 @@
   {"id":"P1-封面","tpl":"cover",
    "bg":"na-wide.png","eyebrow":"Sodium &amp; Its Compounds","title":"钠及其化合物",
    "en":"SODIUM · 活性之源","sub":"从活泼金属到多彩化合物 · 探索钠元素的化学世界",
-   "foot":"高中化学 · 元素化合物专题","na":"Na 11"},
+   "foot":"高中化学 · 元素化合物专题","corner":"Na 11"},
 
   {"id":"P2-目录","tpl":"toc_grid",
    "brow":"Chemistry · Chapter","no":"02 / 18","title":"学习导航",

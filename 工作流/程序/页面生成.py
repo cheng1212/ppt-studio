@@ -13,11 +13,15 @@
   photo_chain  图文因果页（左图右编号链 + 提示框）
 """
 import io, json, os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from 基座 import OK, FAIL, USAGE, ERR, read_json, die, project_dir, theme_css_path, WORKFLOW
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-# file:// 下中文目录外链 CSS 会被 Chromium 跨源拦截——生成时直接内联主题
-THEME = io.open(os.path.join(HERE, "..", "库", "theme-sodium.css"), encoding="utf-8").read()
+# 主题 CSS 内联（file:// 下中文目录外链 CSS 会被 Chromium 跨源拦截）。
+# 主题可切换：环境变量 PPT_THEME_CSS（相对 库/），默认 theme-sodium.css。
+# ——改主题 = 换 CSS 文件 + 换主题卡，不碰本程序（定案 D1）。
+THEME = io.open(theme_css_path(), encoding="utf-8").read()
 
 HEAD = """<!DOCTYPE html>
 <html lang="zh">
@@ -41,7 +45,7 @@ def img(name):
     if not name:
         return "none"
     import base64
-    path = os.path.normpath(os.path.join(HERE, "..", only_project(), "素材", name))
+    path = os.path.normpath(os.path.join(project_dir(), "素材", name))
     raw = open(path, "rb").read()
     return "url(data:image/png;base64," + base64.b64encode(raw).decode() + ")"
 
@@ -73,7 +77,7 @@ def t_cover(p):
     <div class="sub">{esc(p['sub'])}</div>
   </div>
   <div class="footline2"><div class="line"></div><span>{esc(p['foot'])}</span></div>
-  <div class="na">{esc(p.get('na','Na 11'))}</div>
+  <div class="na">{esc(p.get('corner', ''))}</div>
 </body>
 </html>
 """
@@ -237,22 +241,21 @@ TEMPLATES = {
 }
 
 
-def only_project():
-    """项目路径（相对 工作流/）：环境变量 PPT_PROJECT 或默认 示例-化学钠/化学-钠及其化合物"""
-    return os.environ.get("PPT_PROJECT", "示例-化学钠/化学-钠及其化合物")
-
-
 def main():
     only = sys.argv[1] if len(sys.argv) > 1 else None
-    proj = os.path.normpath(os.path.join(HERE, "..", only_project()))
+    proj = project_dir()
     print("项目:", proj)
-    pages = json.load(io.open(os.path.join(proj, "页", "pages.json"), encoding="utf-8"))
+    print("主题:", theme_css_path())
+    pages = read_json(os.path.join(proj, "页", "pages.json"))
     for p in pages:
         if only and p["id"] != only:
             continue
-        tpl = TEMPLATES[p["tpl"]]
-        html = tpl(p)
-        out = os.path.join(HERE, "..", p.get("项目", only_project()), "页", p["id"] + ".html")
+        if p["tpl"] not in TEMPLATES:
+            # 未知页型：直接拒，不抛 KeyError（数据规约：tpl 为闭集）
+            die("未知页型 tpl=%r（页面 %s），合法取值为: %s"
+                % (p["tpl"], p.get("id"), sorted(TEMPLATES)), code=FAIL)
+        html = TEMPLATES[p["tpl"]](p)
+        out = os.path.join(proj, "页", p["id"] + ".html")
         io.open(out, "w", encoding="utf-8").write(html)
         print("生成", p["id"] + ".html")
 
