@@ -41,7 +41,7 @@ def img(name):
     if not name:
         return "none"
     import base64
-    path = os.path.normpath(os.path.join(HERE, "..", "项目", only_project(), "素材", name))
+    path = os.path.normpath(os.path.join(HERE, "..", only_project(), "素材", name))
     raw = open(path, "rb").read()
     return "url(data:image/png;base64," + base64.b64encode(raw).decode() + ")"
 
@@ -238,20 +238,21 @@ TEMPLATES = {
 
 
 def only_project():
-    """项目名：环境变量 PPT_PROJECT 或默认 化学-钠及其化合物"""
-    return os.environ.get("PPT_PROJECT", "化学-钠及其化合物")
+    """项目路径（相对 工作流/）：环境变量 PPT_PROJECT 或默认 示例-化学钠/化学-钠及其化合物"""
+    return os.environ.get("PPT_PROJECT", "示例-化学钠/化学-钠及其化合物")
 
 
 def main():
     only = sys.argv[1] if len(sys.argv) > 1 else None
-    proj = os.path.normpath(os.path.join(HERE, "..", "项目", only_project()))
+    proj = os.path.normpath(os.path.join(HERE, "..", only_project()))
+    print("项目:", proj)
     pages = json.load(io.open(os.path.join(proj, "页", "pages.json"), encoding="utf-8"))
     for p in pages:
         if only and p["id"] != only:
             continue
         tpl = TEMPLATES[p["tpl"]]
         html = tpl(p)
-        out = os.path.join(HERE, "..", "项目", p.get("项目","化学-钠及其化合物"), "页", p["id"] + ".html")
+        out = os.path.join(HERE, "..", p.get("项目", only_project()), "页", p["id"] + ".html")
         io.open(out, "w", encoding="utf-8").write(html)
         print("生成", p["id"] + ".html")
 
