@@ -54,6 +54,22 @@ textarea{min-height:80px;resize:vertical}
 .row{display:flex;gap:12px;align-items:center;margin-top:20px}
 .loading{color:var(--muted);padding:40px;text-align:center}
 .hidden{display:none}
+@media (max-width:640px){
+  header{padding:14px 16px;gap:10px}
+  header h1{font-size:17px}
+  main{padding:18px 14px}
+  .steps{gap:6px;margin-bottom:22px}
+  .step{font-size:12px;padding:10px 4px}
+  .themes{grid-template-columns:1fr;gap:12px}
+  .thumbs{grid-template-columns:repeat(2,1fr);gap:10px}
+  .fields{grid-template-columns:1fr}
+  .page .ph select{width:100%;margin-left:0;margin-top:8px}
+  .page .ph{flex-wrap:wrap}
+  .row{flex-direction:column;align-items:stretch}
+  button{min-height:44px;font-size:16px}
+  input,select,textarea{font-size:16px;min-height:44px}
+  .card{padding:18px}
+}
 </style>
 </head>
 <body>
@@ -130,8 +146,13 @@ function go(n){
   [1,2,3,4].forEach(i=>document.getElementById('s'+i).classList.toggle('hidden', i!==n));
   window.scrollTo(0,0);
 }
+const TOKEN = new URLSearchParams(location.search).get('token') || '';
+function withToken(url){
+  if(!TOKEN) return url;
+  return url + (url.includes('?') ? '&' : '?') + 'token=' + encodeURIComponent(TOKEN);
+}
 async function api(url, body){
-  const r = await fetch(url, {method: body?'POST':'GET',
+  const r = await fetch(withToken(url), {method: body?'POST':'GET',
     headers:{'Content-Type':'application/json'},
     body: body?JSON.stringify(body):undefined});
   return r.json();
@@ -219,12 +240,12 @@ async function preview(){
   const r = await api('/api/渲染页', {主题:S.theme, pages});
   if(r.error) { document.getElementById('thumbs').innerHTML='<div class="loading">失败：'+r.error+'</div>'; return; }
   let h='';
-  for(let i=0;i<r.页数;i++) h+=`<div class="thumb"><img src="/api/缩略图?i=${i}&t=${Date.now()}" loading="lazy"><div class="cap">P${i+1}</div></div>`;
+  for(let i=0;i<r.页数;i++) h+=`<div class="thumb"><img src="${withToken('/api/缩略图?i='+i+'&t='+Date.now())}" loading="lazy"><div class="cap">P${i+1}</div></div>`;
   document.getElementById('thumbs').innerHTML=h;
 }
 async function exportPPT(){
   const pages = collect();
-  const r = await fetch('/api/导出', {method:'POST',
+  const r = await fetch(withToken('/api/导出'), {method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({主题:S.theme, pages})});
   if(!r.ok){ const j=await r.json(); return alert('导出失败：'+(j.error||r.status)); }

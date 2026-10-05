@@ -52,12 +52,28 @@ def 主题色(主题):
     }
 
 
+_CJK_FONT_FILES = (
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc",
+)
+
+
 def _mpl():
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    from matplotlib import font_manager
+    import os
+    # 显式注册 CJK 字体（某些环境 fontconfig 缓存未覆盖 .ttc）
+    for fp in _CJK_FONT_FILES:
+        if os.path.isfile(fp):
+            try:
+                font_manager.fontManager.addfont(fp)
+            except Exception:
+                pass
     plt.rcParams["font.family"] = "sans-serif"
-    plt.rcParams["font.sans-serif"] = ["Noto Sans CJK SC", "Source Han Sans SC",
+    plt.rcParams["font.sans-serif"] = ["Noto Sans CJK SC", "Noto Sans CJK JP",
+                                      "Source Han Sans SC",
                                       "Microsoft YaHei", "PingFang SC", "DejaVu Sans"]
     plt.rcParams["axes.unicode_minus"] = False
     return plt

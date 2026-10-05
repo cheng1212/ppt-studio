@@ -16,6 +16,11 @@ API:
 启动：
     python 工作流/控制台/server.py --port 8901
     浏览器打开 http://localhost:8901/
+
+手机/公网：
+    python 工作流/控制台/server.py --host 0.0.0.0 --token <令牌>
+    再用 cloudflared 起隧道（见 控制台/手机.sh），手机打开隧道 URL。
+    非回环监听无 token 时拒绝启动。
 """
 import base64
 import io
@@ -31,6 +36,18 @@ sys.path.insert(0, os.path.join(WORKFLOW, "程序"))
 
 REPO_TMP = "/tmp/ppt-console"
 os.makedirs(REPO_TMP, exist_ok=True)
+
+TOKEN = os.environ.get("PPT_CONSOLE_TOKEN", "")
+
+
+def _鉴权(handler):
+    """Token 鉴权：未配置 TOKEN 时跳过（localhost 默认行为不变）。"""
+    if not TOKEN:
+        return True
+    qs = urllib.parse.parse_qs(urllib.parse.urlparse(handler.path).query)
+    got = (qs.get("token", [""])[0] or
+           handler.headers.get("X-Console-Token", ""))
+    return got == TOKEN
 
 
 def _json(handler, obj, code=200):
@@ -51,6 +68,8 @@ class Handler(BaseHTTPRequestHandler):
         return json.loads(self.rfile.read(n).decode("utf-8")) if n else {}
 
     def do_GET(self):
+        if not _鉴权(self):
+            return _json(self, {"error": "未鉴权（缺 token）"}, 401)
         parsed = urllib.parse.urlparse(self.path)
         path = urllib.parse.unquote(parsed.path)
         qs = urllib.parse.parse_qs(parsed.query)
@@ -81,6 +100,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_error(404)
 
     def do_POST(self):
+        if not _鉴权(self):
+            return _json(self, {"error": "未鉴权（缺 token）"}, 401)
         parsed = urllib.parse.urlparse(self.path)
         path = urllib.parse.unquote(parsed.path)
         if path == "/api/一句话":
@@ -248,9 +269,23 @@ def main():
     import argparse
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8901)
+    ap.add_argument("--host", default="127.0.0.1",
+                    help="监听地址；手机/公网用 0.0.0.0（必须配 token）")
+    ap.add_argument("--token", default=None,
+                    help="访问令牌；也可经环境变量 PPT_CONSOLE_TOKEN 传入")
     a = ap.parse_args()
-    srv = HTTPServer(("127.0.0.1", a.port), Handler)
-    print("PPT Studio 控制台 → http://localhost:%d/" % a.port)
+    global TOKEN
+    if a.token:
+        TOKEN = a.token
+    回环 = a.host in ("127.0.0.1", "localhost", "::1")
+    if not 回环 and not TOKEN:
+        print("拒绝启动：--host %s 非回环地址，必须配 --token（或环境变量 "
+              "PPT_CONSOLE_TOKEN），不许把无鉴权服务暴露出去。" % a.host)
+        sys.exit(2)
+    srv = HTTPServer((a.host, a.port), Handler)
+    print("PPT Studio 控制台 → http://%s:%d/" % (a.host, a.port))
+    if TOKEN:
+        print("已启用 token 鉴权（URL 后加 ?token=... 或请求头 X-Console-Token）")
     srv.serve_forever()
 
 

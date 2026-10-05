@@ -21,6 +21,14 @@
   img.py         图片处理固定工具：info / resize（cover/contain/stretch，语义对齐模板）
                  / crop-ratio（按比例中心裁剪）/ convert（格式转换，按后缀推断）
   截图.py        批量 HTML → PNG（1920×1080），整个目录一条命令
+  内容生成.py    内容生成层：一句话 → 大纲 → briefs（约束）→ writer（窄接口）
+                 → 收集（校验/图表/洞察/配图规划）→ pages.json → 校验闸。
+                 无 writer 时停在 briefs 等人工填 filled/；生图不可用时出
+                 "待生图"占位图并记配图规划.json，不冒充真实素材。
+  控制台/
+    server.py    图形化控制台后端（stdlib only）。--host/--token：手机/公网访问
+                 时必须配 token，非回环无 token 拒绝启动。
+    手机.sh      一键：server(0.0.0.0+token) + cloudflared 隧道，打印手机 URL。
   生图/
     gemini生图.py  Playwright 驱动本机 Gemini 网页（CDP 9222），canvas 通道取原图
     千问生图.py    dashscope API 同步生图（key 跨平台查找，仓库无密钥）
@@ -70,6 +78,37 @@ E1. 导出：从 pages.json 数据原生构建可编辑 PPTX（程序待建，�
 
 一条命令走一步，状态落盘 `<项目>/流水线.json`，可续跑；拍板点全部显式停下等人。
 `python 程序/流水线.py 状态` 随时看进度。
+
+## 一句话 → 成品（内容生成层）
+
+```
+python 程序/内容生成.py 一句话 --输入 "双11大促战报" --项目 _草稿/双11
+# 无 writer：生成 大纲.json + briefs/，按指引填 filled/ 后跑 收集
+python 程序/内容生成.py 收集 --briefs <项目>/briefs --filled <项目>/filled \
+    --项目 <项目> --主题 dianshang
+# 有 writer（LLM/智能体，stdin brief → stdout 页数据 JSON）：
+python 程序/内容生成.py 一句话 --输入 "…" --项目 <项目> \
+    --writer-cmd "python my_writer.py" --writer-retries 2 --writer-timeout 120
+```
+
+- Writer 协议：stdin 收 brief JSON，stdout 只吐页数据 JSON（字段白名单约束，
+  越界字段收集时拦截 FAIL）；stderr 日志；exit 非 0 按预算重试。
+- 预算与降级：超预算的页记 `<项目>/内容生成_debt.json`（待手填），其余继续。
+- chart 页：writer 只给 chart_spec，程序调 图表.py 生成 + 洞察.py 自动写洞察。
+- 配图：prompt 走 生图/prompt规约.py（中国人/中国场景）；`--生图` 且后端可用
+  时真实生成并登记素材卡，否则出中文"待生图"占位图 + 配图规划.json。
+
+## 手机用控制台
+
+```bash
+bash 工作流/控制台/手机.sh --port 8901   # 打印形如 https://xxx.trycloudflare.com/?token=… 的 URL
+```
+
+- server.py `--host 0.0.0.0 --token <令牌>`（或环境变量 PPT_CONSOLE_TOKEN）；
+  非回环监听无 token 时拒绝启动，不许把无鉴权服务暴露出去。
+- 前端已做移动端适配（响应式布局、44px 触控目标），token 经 URL 参数透传给所有 API。
+- 说明：cloudflared 隧道在受限网络（如 TLS 被拦截的沙箱）可能建连失败；
+  此时手机最稳的路径是直接在对话里说一句话，由 Muse 跑内容生成层交回 PNG/PPTX。
 
 PPTX 是唯一的客户交付物：PNG/HTML 只做预览与过程检查，不直接交付。
 
