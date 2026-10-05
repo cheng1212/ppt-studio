@@ -139,8 +139,13 @@ def 渲染组件(slide, 组件, ctx):
         v = _字段(ctx, 组件.get("字段"))
         if not v:
             return
-        # data URI 或路径都支持：先落盘
+        # data URI 或路径都支持：相对路径走项目 素材/ 目录（与 _img_path 一致）
         path = v
+        if (isinstance(v, str) and not v.startswith("data:")
+                and not v.startswith("http") and not os.path.isabs(v)):
+            base = ctx.get("_素材dir")
+            if base:
+                path = os.path.normpath(os.path.join(base, v))
         if isinstance(v, str) and v.startswith("data:"):
             import base64
             m = re.match(r"data:image/(\w+);base64,(.*)", v, re.S)
@@ -201,7 +206,9 @@ def 渲染组件(slide, 组件, ctx):
 
 
 def 渲染声明式(slide, p, 映射):
-    ctx = {"p": p}
+    from 基座 import project_dir
+    ctx = {"p": p,
+           "_素材dir": os.path.normpath(os.path.join(project_dir(), "素材"))}
     for c in 映射:
         渲染组件(slide, copy.deepcopy(c), ctx)
 
