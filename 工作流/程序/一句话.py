@@ -64,12 +64,15 @@ def main():
     txt = json.dumps(out, ensure_ascii=False, indent=2)
     if a.输出:
         io.open(a.输出, "w", encoding="utf-8").write(txt)
-        print("大纲 → %s（%d页，模板=%s）" % (a.输出, out["页数"], out["大纲模板"]))
+        print("大纲 → %s（%d页，模板=%s）" % (a.输出, out["页数"], out["大纲模板"]),
+              file=sys.stderr)
     else:
-        print(txt)
-    # 打印意图和主题推荐摘要
-    print("意图：%s" % "、".join("%s=%s" % kv for kv in out["意图"].items()))
-    print("主题：%s" % " / ".join(t["主题"] for t in out["主题推荐"]))
+        print(txt)  # stdout 只走纯 JSON，摘要走 stderr
+    # 打印意图和主题推荐摘要（stderr，不污染 stdout 的 JSON）
+    print("意图：%s" % "、".join("%s=%s" % kv for kv in out["意图"].items()),
+          file=sys.stderr)
+    print("主题：%s" % " / ".join(t["主题"] for t in out["主题推荐"]),
+          file=sys.stderr)
 
 
 if __name__ == "__main__":
