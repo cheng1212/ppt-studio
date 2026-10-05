@@ -75,9 +75,26 @@ def main():
             if err:
                 die(err, code=FAIL)
             answers[q["id"]] = given[q["id"]]
+        if "主色" not in given or not given["主色"]:
+            die("答案缺 主色（T0 设计简报拍板的主色 hex，如 161A21）", code=USAGE)
+        answers["主色"] = given["主色"].strip().lstrip("#").upper()
     else:
         for q in rules["问题"]:
             answers[q["id"]] = ask_interactive(q)
+        answers["主色"] = input("  主色 hex（T0 简报拍板，如 161A21）: ").strip().lstrip("#").upper()
+        if len(answers["主色"]) != 6:
+            die("主色 hex 非法", code=USAGE)
+
+    # v2：调色板生成器按 60-30-10 出完整 12 令牌，不再手填
+    from 配色 import full_scheme
+    scheme = full_scheme(answers["主色"])
+    print("调色板方案（60-30-10）：")
+    for tok in ["--bg", "--bg-dark", "--gold", "--gold-soft", "--ink", "--green",
+                "--silver", "--muted", "--line", "--card", "--ox", "--ink-dark"]:
+        print("  %s #%s" % (tok, scheme[tok]))
+    print("确认无误回车继续，人要微调请现在改 answers.json 重跑（微调须记录偏离）")
+    if not a.答案:
+        input()
 
     name = a.主题
     out = os.path.join(LIB_DIR, "主题", "卡片", "主题卡-%s.md" % name)
@@ -99,21 +116,21 @@ def main():
     for q in rules["问题"]:
         ans = answers[q["id"]]
         lines.append("- %s %s: %s" % (q["id"], q["问题"], "/".join(ans) if isinstance(ans, list) else ans))
+    用途 = {"--bg": "知识页底（60% 主色）", "--bg-dark": "深页底（封面/章节页）",
+            "--gold": "唯一核心强调（10%，只落焦点）", "--gold-soft": "次级强调",
+            "--ink": "主墨色（正文，≥7.0）", "--green": "标题/标签（30% 副色）",
+            "--silver": "深底辅助字", "--muted": "弱化字（≥4.5）",
+            "--line": "发丝线", "--card": "卡底",
+            "--ox": "语义警示/热销（≥3.0）",
+            "--ink-dark": "深底正文字（≥4.5）"}
+    tok_rows = ["| %s | #%s | %s |" % (t, scheme[t], 用途[t])
+               for t in ["--bg", "--bg-dark", "--gold", "--gold-soft", "--ink",
+                         "--green", "--silver", "--muted", "--line", "--card",
+                         "--ox", "--ink-dark"]]
     lines += ["",
-              "## 配色令牌表（令牌/色值/用途）", "",
+              "## 配色令牌表（令牌/色值/用途；60-30-10 由配色.py 生成）", "",
               "| 令牌 | 色值 | 用途 |",
-              "|---|---|---|",
-              "| --bg |  | 知识页底 |",
-              "| --bg-dark |  | 深页底 |",
-              "| --gold |  | 唯一核心强调 |",
-              "| --gold-soft |  | 次级强调 |",
-              "| --ink |  | 主墨色 |",
-              "| --green |  | 标题/标签 |",
-              "| --silver |  | 深底辅助字 |",
-              "| --muted |  | 浅底弱化字 |",
-              "| --line |  | 发丝线 |",
-              "| --card |  | 卡底 |",
-              "", "## 字体与字号", "", "（待填）",
+              "|---|---|---|"] + tok_rows + [
               "", "## 间距", "",
               "- 页边距（--mx）: （待填，如 120px）",
               "- 页头起始（--head-top）: （待填，如 126px）",
@@ -127,7 +144,21 @@ def main():
               "", "## 下游", "", "（待填）", ""]
     io.open(out, "w", encoding="utf-8").write("\n".join(lines))
     print("OK 已生成主题卡骨架:", out)
-    print("下一步: 填卡 → 手写 库/theme-%s.css → python 程序/校验.py --主题 %s" % (name, name))
+    # T3：由骨架 + 方案直接生成 CSS，不手写
+    skel = io.open(os.path.join(LIB_DIR, "主题", "_骨架.css"), encoding="utf-8").read()
+    import re as _re
+    # 取骨架 :root 当前 12 个 token 的旧值，逐个替换为方案值
+    for tok, new_hex in scheme.items():
+        skel, n = _re.subn(r"(%s\s*:\s*)#[0-9a-fA-F]{6}" % tok.replace("-", r"\-"),
+                           r"\g<1>#%s" % new_hex, skel, count=1)
+        if n == 0:
+            die("骨架缺令牌 %s" % tok, code=FAIL)
+    css_out = os.path.join(LIB_DIR, "theme-%s.css" % name)
+    if os.path.exists(css_out):
+        die("主题 CSS 已存在: %s（不覆盖）" % css_out, code=FAIL)
+    io.open(css_out, "w", encoding="utf-8").write(skel)
+    print("OK 已生成主题 CSS:", css_out)
+    print("下一步: 补主题卡文字部分 → python 程序/校验.py --主题 %s → python 程序/主题样张.py --主题 %s" % (name, name))
 
 
 if __name__ == "__main__":

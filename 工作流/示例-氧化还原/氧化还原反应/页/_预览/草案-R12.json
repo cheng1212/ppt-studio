@@ -1,0 +1,28 @@
+[
+  {
+    "id": "草案-R12-flow_branch",
+    "tpl": "flow_branch",
+    "brow": "xx",
+    "no": "12 / 12",
+    "kick": "LAYOUT DRAFT",
+    "title": "是不是氧化还原反应？<span class=\"q\">（只看布局）</span>",
+    "root": {
+      "t": "起点",
+      "d": "占位说明"
+    },
+    "branches": [
+      {
+        "cond": "条件A",
+        "result": "结果A",
+        "d": "占位"
+      },
+      {
+        "cond": "条件B",
+        "result": "结果B",
+        "d": "占位"
+      }
+    ],
+    "concl": "占位结论条",
+    "foot": "占位页脚"
+  }
+]

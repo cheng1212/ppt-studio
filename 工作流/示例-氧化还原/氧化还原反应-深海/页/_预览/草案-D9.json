@@ -1,0 +1,34 @@
+[
+  {
+    "id": "草案-D9-flow_cycle",
+    "tpl": "flow_cycle",
+    "brow": "xx",
+    "no": "09 / 18",
+    "kick": "LAYOUT DRAFT",
+    "title": "氧化反应与还原反应的关系<span class=\"q\">（只看布局）</span>",
+    "nodes": [
+      "节点一",
+      "节点二",
+      "节点三"
+    ],
+    "edges": [
+      {
+        "from": "节点一",
+        "to": "节点二",
+        "label": "转化"
+      },
+      {
+        "from": "节点二",
+        "to": "节点三",
+        "label": "转化"
+      },
+      {
+        "from": "节点三",
+        "to": "节点一",
+        "label": "转化"
+      }
+    ],
+    "concl": "占位结论条",
+    "foot": "占位页脚"
+  }
+]

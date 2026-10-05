@@ -65,8 +65,8 @@ def cycle(nodes, edges, width=1680, height=600, center=(840, 290),
           rx=430, ry=190, node_r=86,
           line_color="var(--green)", node_fill="var(--card)",
           node_text="var(--green)", label_color="var(--muted)",
-          halo="#F5F3ED",
-          font="'Microsoft YaHei','PingFang SC',sans-serif"):
+          halo="var(--bg)",
+          font="'思源黑体','Noto Sans CJK SC','Source Han Sans SC','Microsoft YaHei','PingFang SC',sans-serif"):
     """环形关系图：nodes 按顺时针从顶部开始环形排布，edges 为带标签箭头。
 
     nodes: 节点名数组（3–6 项）。
@@ -105,7 +105,7 @@ def cycle(nodes, edges, width=1680, height=600, center=(840, 290),
         ly = 0.25 * sy + 0.5 * qy + 0.25 * ey + oy / ol * 30
         t = dwg.text(_esc(e["label"]), insert=(round(lx), round(ly)),
                      text_anchor="middle", dominant_baseline="central",
-                     font_size=21, font_family=font)
+                     font_size=22, font_family=font)  # cap档
         t.update({"style": f"fill:{label_color};paint-order:stroke;"
                            f"stroke:{halo};stroke-width:7px"})
         dwg.add(t)
@@ -117,7 +117,30 @@ def cycle(nodes, edges, width=1680, height=600, center=(840, 290),
         dwg.add(c)
         t = dwg.text(_esc(name), insert=(round(x), round(y)),
                      text_anchor="middle", dominant_baseline="central",
-                     font_size=36, font_weight=800, font_family=font)
+                     font_size=34, font_weight=800, font_family=font)  # body档
         t.update({"style": f"fill:{node_text}"})
         dwg.add(t)
+    return dwg.tostring()
+
+
+def timeline_axis(cxs, y, x0, x1, ups, line="var(--line)", dot="var(--gold)",
+                  dot_ring="var(--bg)"):
+    """横向时间轴：直线 + 节点圆点 + 上下短桩线。
+
+    cxs: 节点 x 坐标数组；y: 轴线 y；x0/x1: 轴线起止；
+    ups: 与 cxs 等长的 bool 数组，True=桩线朝上。
+    颜色走主题 CSS 变量（写 style 属性）。
+    """
+    dwg = svgwrite.Drawing(size=("100%", "100%"))
+    ln = dwg.line(start=(x0, y), end=(x1, y))
+    ln.update({"style": f"stroke:{line};stroke-width:3"})
+    dwg.add(ln)
+    for cx, up in zip(cxs, ups):
+        y2 = y - 46 if up else y + 46
+        stub = dwg.line(start=(cx, y), end=(cx, y2))
+        stub.update({"style": f"stroke:{line};stroke-width:3"})
+        dwg.add(stub)
+        c = dwg.circle(center=(cx, y), r=13)
+        c.update({"style": f"fill:{dot};stroke:{dot_ring};stroke-width:5"})
+        dwg.add(c)
     return dwg.tostring()

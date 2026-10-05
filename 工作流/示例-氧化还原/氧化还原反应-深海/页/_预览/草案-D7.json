@@ -1,0 +1,61 @@
+[
+  {
+    "id": "草案-D7-photo_chain",
+    "tpl": "photo_chain",
+    "brow": "xx",
+    "no": "07 / 18",
+    "kick": "LAYOUT DRAFT",
+    "title": "化合价升降与电子转移<span class=\"q\">（只看布局）</span>",
+    "img": "ds-atom.jpg",
+    "cap": "占位图注",
+    "steps": [
+      {
+        "t": "步骤一",
+        "d": "占位说明"
+      },
+      {
+        "t": "步骤二",
+        "d": "占位说明"
+      },
+      {
+        "t": "步骤三",
+        "d": "占位说明"
+      }
+    ],
+    "warn": "<b>占位提示：</b>只看布局",
+    "foot": "占位页脚"
+  },
+  {
+    "id": "草案-D7-photo_props",
+    "tpl": "photo_props",
+    "brow": "xx",
+    "no": "07 / 18",
+    "kick": "LAYOUT DRAFT",
+    "title": "化合价升降与电子转移<span class=\"q\">（只看布局）</span>",
+    "img": "ds-atom.jpg",
+    "tag": "<b>草案</b>角标",
+    "cap": "占位图注",
+    "rows": [
+      {
+        "b": "green",
+        "k": "标签一",
+        "n": "<em>要点一</em>",
+        "d": "占位说明"
+      },
+      {
+        "b": "gold",
+        "k": "标签二",
+        "n": "要点二",
+        "d": "占位说明"
+      },
+      {
+        "b": "ink",
+        "k": "标签三",
+        "n": "要点三",
+        "d": "占位说明"
+      }
+    ],
+    "concl": "占位结论条",
+    "foot": "占位页脚"
+  }
+]

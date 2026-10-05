@@ -12,7 +12,7 @@
   基座.py        共享执行层：stdout 编码 / 路径 / 退出码 / JSON 读写（一处定义，全部共用）
   校验.py        数据闸：pages.json 按页型卡 schema 校验 + 主题令牌检查（P2→P3 必经）
   主题问卷.py    定主题：按主题问卷规约收敛 6 问答案 → 生成主题卡骨架
-  页面生成.py    核心：pages.json（数据）+ 页型模板（8 种）→ HTML
+  页面生成.py    核心：pages.json（数据）+ 页型模板（9 种）→ HTML
                  主题 CSS 内联注入（PPT_THEME_CSS 可切换）、素材图 base64 内嵌
   svg.py         SVG 图元工具库：fork（分支分叉线）/ cycle（环形节点+箭头），
                  颜色走主题 CSS 变量；flow_branch / flow_cycle 模板调用它
@@ -75,9 +75,11 @@ PPTX 是唯一的客户交付物：PNG/HTML 只做预览与过程检查，不直
 
 ```
 1. python 程序/主题问卷.py --主题 <名> --答案 answers.json   # 6 问闭集收敛
-2. 填主题卡 → 手写 库/theme-<名>.css
-3. python 程序/校验.py --主题 <名>        # 令牌闸
-4. PPT_PROJECT=<项目> PPT_THEME_CSS=theme-<名>.css 跑上面 1–5 步
+2. 填主题卡 → 复制 库/主题/_骨架.css 为 库/theme-<名>.css，只填 :root 10 个令牌值
+   （不许改规则；改规则=改骨架，会影响所有主题）
+3. python 程序/校验.py --主题 <名>        # 令牌闸＋对比度闸（ink/bg≥4.5、gold/bg≥3.0）
+4. python 程序/主题样张.py --主题 <名>    # T4：浅/深两张样张，用户看图拍板后主题卡转定稿
+5. PPT_PROJECT=<项目> PPT_THEME_CSS=theme-<名>.css 跑上面 1–5 步
 ```
 
 ## 设计纪律（Library 层的规约，程序按此执行）

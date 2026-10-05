@@ -1,0 +1,12 @@
+[
+  {
+    "id": "草案-R1-cover",
+    "tpl": "cover",
+    "bg": "redox-balance.png",
+    "eyebrow": "草案",
+    "title": "氧化还原反应<span class=\"q\">（只看布局）</span>",
+    "en": "Layout Draft",
+    "sub": "占位副标题（只看布局，不管文案）",
+    "foot": "占位页脚"
+  }
+]

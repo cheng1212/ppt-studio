@@ -1,0 +1,33 @@
+{
+ "id": "D7",
+ "tpl": "photo_props",
+ "brow": "01 · 概念",
+ "no": "07 / 18",
+ "kick": "CORE",
+ "title": "化合价升降与<span class=\"q\">电子转移</span>",
+ "img": "ds-etransfer.png",
+ "tag": "<b>可视</b>化",
+ "cap": "电子沿箭头从失电子原子流向得电子原子",
+ "rows": [
+  {
+   "b": "ox",
+   "k": "升高对应",
+   "n": "<span class=\"ox\">化合价升高</span> ⇔ <span class=\"ox\">失电子</span> ⇔ <span class=\"ox\">被氧化</span>",
+   "d": "三者同义，记住这一组"
+  },
+  {
+   "b": "green",
+   "k": "降低对应",
+   "n": "<em>化合价降低</em> ⇔ <em>得电子</em> ⇔ <em>被还原</em>",
+   "d": "三者同义，记住另一组"
+  },
+  {
+   "b": "gold",
+   "k": "桥梁",
+   "n": "化合价是<em>电子转移</em>的外在标尺",
+   "d": "看不见电子，就看化合价"
+  }
+ ],
+ "concl": "<b>对应关系：</b><span class=\"ox\">升、失、氧</span>一组，<em>降、得、还</em>另一组",
+ "foot": "对应关系 · 记忆抓手"
+}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<style>
+/* ============================================================
+ * REDOX · 氧化还原 — 全套主题唯一真源（由 _骨架.css 复制，T3 只填令牌）
+ *
+ * 新主题 = 复制本文件为 库/theme-<主题名>.css，只改 :root 里 10 个
+ * 配色令牌的值，不许改下面的规则。
+ * 要改规则 = 改本骨架（会影响所有主题，慎重）。
+ *
+ * 纪律：规则里不许出现硬编码色值，一律走 var(--令牌)。
+ * ============================================================ */
+:root{
+  /* ---- 配色令牌（新主题只改这 10 个值） ---- */
+  --bg:#F4F6F8;          /* 知识页底 */
+  --bg-dark:#1F2A33;     /* 深底：封面/章节页底 */
+  --gold:#C0392B;        /* 唯一核心强调（眉题/徽章/装饰条；只做大文本与装饰，不做正文） */
+  --gold-soft:#E07A5F;   /* 次级强调 */
+  --ink:#1F2A33;         /* 正文墨色（须与 --bg 对比度 ≥ 4.5） */
+  --green:#2E4053;       /* 标题/标签/章名（须与 --bg 对比度 ≥ 3.0） */
+  --silver:#C3CCD6;      /* 深底辅助字 */
+  --muted:#8B95A1;       /* 浅底弱化字 */
+  --line:#D8DEE6;        /* 发丝线 */
+  --card:#FFFFFF;        /* 卡底 */
+
+  /* ---- 字号阶（16:9 @1920） ---- */
+  --fs-page-title:62px; --fs-section-title:118px;
+  --fs-body-n:29px; --fs-body:22px; --fs-desc:19px;
+  --fs-kick:19px; --fs-brow:21px; --fs-cap:19px;
+
+  /* ---- 间距 ---- */
+  --mx:120px;            /* 页边距 */
+  --head-top:126px;      /* 页头起始 */
+}
+
+/* ============ 基础 ============ */
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden}
+body{position:relative;background:var(--bg);color:var(--ink);
+     font-family:"Microsoft YaHei","PingFang SC",sans-serif}
+body.dark{background:var(--bg-dark);color:var(--bg)}
+
+/* ============ 页眉系统（每页复用） ============ */
+.brow{position:absolute;left:var(--mx);top:60px;font-family:Georgia,serif;
+      font-size:var(--fs-brow);color:var(--green);letter-spacing:.38em;text-transform:uppercase}
+body.dark .brow{color:var(--silver);opacity:.75}
+.pageno{position:absolute;right:var(--mx);top:60px;font-family:Georgia,serif;
+        font-size:var(--fs-brow);color:var(--muted);letter-spacing:.2em}
+body.dark .pageno{color:var(--silver);opacity:.6}
+
+/* ============ 页头（kick 眉题 + 大标题） ============ */
+.head{position:absolute;left:var(--mx);top:var(--head-top);width:1680px}
+.kick{font-family:Georgia,serif;font-size:var(--fs-kick);color:var(--gold);
+      letter-spacing:.3em;font-weight:700}
+h1{margin-top:14px;font-size:var(--fs-page-title);color:var(--ink);
+   font-weight:800;letter-spacing:.04em;line-height:1.25}
+h1 .q{color:var(--green)}          /* 标题里的强调半句 */
+body.dark h1{color:var(--bg)}
+
+/* ============ 页脚（发丝线 + 右注） ============ */
+.foot-line{position:absolute;left:var(--mx);bottom:50px;width:1680px;height:1px;background:var(--line)}
+body.dark .foot-line{background:#3A423F}
+.foot{position:absolute;right:var(--mx);bottom:64px;font-size:18px;
+      color:var(--muted);letter-spacing:.12em}
+body.dark .foot{color:var(--silver)}
+.foot-left{position:absolute;left:var(--mx);bottom:64px;font-size:18px;
+           color:var(--muted);letter-spacing:.12em}
+
+/* ============ 结构件（总则 6.5 点缀件） ============ */
+.badge{display:inline-flex;align-items:center;justify-content:center;
+       font-weight:700;letter-spacing:.14em}
+.badge.ink{background:var(--ink);color:var(--bg)}
+.badge.green{background:var(--green);color:var(--bg)}
+.badge.gold{background:var(--gold);color:var(--ink)}
+
+.concl{background:var(--card);border-left:6px solid var(--gold);
+       padding:22px 28px;font-size:var(--fs-body);color:var(--ink);line-height:1.75}
+.concl b{color:var(--green)}
+
+.numdot{width:48px;height:48px;flex:none;background:var(--green);color:var(--bg);
+        font-family:Georgia,serif;font-size:24px;font-weight:700;
+        display:flex;align-items:center;justify-content:center;border-radius:50%}
+
+.hairline{border-bottom:1px solid var(--line)}
+body.dark .hairline{border-bottom:1px solid #3A423F}
+
+/* ============ 图件 ============ */
+.photo{outline:1px solid var(--line);outline-offset:-1px;
+       background-position:center;background-size:cover;background-repeat:no-repeat}
+.photo.contain{background-size:contain;background-color:var(--bg-dark)}
+.cap{font-size:var(--fs-cap);color:var(--muted);letter-spacing:.1em;text-align:center}
+.tag{position:absolute;background:rgba(37,44,43,.82);color:var(--bg);
+     font-size:20px;letter-spacing:.14em;padding:10px 22px}
+.tag b{color:var(--gold)}
+
+/* ============ 章节页专用 ============ */
+.ghost{position:absolute;right:96px;top:60px;font-family:Georgia,serif;
+       font-size:560px;font-weight:700;color:var(--gold);opacity:.14;
+       line-height:1;letter-spacing:-.02em}
+.gold-rule{width:84px;height:4px;background:var(--gold)}
+
+</style>
+<style>
+  .tlwrap{position:absolute;left:0;top:0;width:1920px;height:1080px}
+  .tlwrap svg{position:absolute;left:120px;top:0;width:1680px;height:1080px}
+  .node{position:absolute;width:340px}
+  .node.up{text-align:center}
+  .node.dn{text-align:center}
+  .node .t{font-family:Georgia,serif;font-size:30px;font-weight:700;
+           color:var(--gold);letter-spacing:.12em}
+  .node .h{margin-top:10px;font-size:27px;font-weight:800;color:var(--ink);
+           letter-spacing:.04em;line-height:1.4}
+  .node .d{margin-top:10px;font-size:20px;color:var(--muted);
+           letter-spacing:.04em;line-height:1.7}
+  .concl{position:absolute;left:var(--mx);bottom:120px;width:1680px}
+</style>
+</head>
+<body class="">
+  <div class="brow">02 · Redox</div><div class="pageno">09 / 12</div>
+  <div class="head"><div class="kick">HISTORY</div>
+    <h1>氧化还原<span class="q">理论发展史</span></h1></div>
+  <div class="tlwrap"><svg baseProfile="full" height="100%" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink"><defs /><line style="stroke:var(--line);stroke-width:3" x1="120" x2="1560" y1="580" y2="580" /><line style="stroke:var(--line);stroke-width:3" x1="120" x2="120" y1="580" y2="534" /><circle cx="120" cy="580" r="13" style="fill:var(--gold);stroke:var(--bg);stroke-width:5" /><line style="stroke:var(--line);stroke-width:3" x1="480" x2="480" y1="580" y2="626" /><circle cx="480" cy="580" r="13" style="fill:var(--gold);stroke:var(--bg);stroke-width:5" /><line style="stroke:var(--line);stroke-width:3" x1="840" x2="840" y1="580" y2="534" /><circle cx="840" cy="580" r="13" style="fill:var(--gold);stroke:var(--bg);stroke-width:5" /><line style="stroke:var(--line);stroke-width:3" x1="1200" x2="1200" y1="580" y2="626" /><circle cx="1200" cy="580" r="13" style="fill:var(--gold);stroke:var(--bg);stroke-width:5" /><line style="stroke:var(--line);stroke-width:3" x1="1560" x2="1560" y1="580" y2="534" /><circle cx="1560" cy="580" r="13" style="fill:var(--gold);stroke:var(--bg);stroke-width:5" /></svg>
+    <div class="node up" style="left:70px;bottom:558px"><div class="t">1772</div><div class="h">舍勒制得氧气</div><div class="d">加热氧化汞得到氧气，燃素说仍占上风</div></div>
+    <div class="node dn" style="left:430px;top:638px"><div class="t">1777</div><div class="h">拉瓦锡革命</div><div class="d">提出“氧化”概念，燃素说终结</div></div>
+    <div class="node up" style="left:790px;bottom:558px"><div class="t">1897</div><div class="h">电子发现</div><div class="d">汤姆孙发现电子，得失电子有了载体</div></div>
+    <div class="node dn" style="left:1150px;top:638px"><div class="t">20 世纪初</div><div class="h">电子转移说</div><div class="d">氧化还原统一为电子得失，化合价成为标尺</div></div>
+    <div class="node up" style="left:1510px;bottom:558px"><div class="t">现代</div><div class="h">电化学时代</div><div class="d">电池、电解、腐蚀与防护，全是氧化还原的应用</div></div>
+  </div>
+  <div class="concl concl">两百年：从<b>得氧失氧</b>到<b>电子转移</b>，概念越抽象，解释力越强</div>
+  <div class="foot-line"></div>
+  <div class="foot">理论沿革 · 五个里程碑</div>
+</body>
+</html>

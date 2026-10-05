@@ -13,7 +13,8 @@
   python 流水线.py 大纲确认                  # S1 拍板 → 落盘 大纲.json → S2
   python 流水线.py 布局                      # S2：当前页候选→草案→预览图，待用户选
   python 流水线.py 布局选 <tpl> --理由 "…"   # S2 拍板 → S3
-  python 流水线.py 做页                      # S3：读 页/待写/<页id>.json → 校验 → 生成 → 截图
+  python 流水线.py 做页 [ --无图 "理由" ]   # S3：读 页/待写/<页id>.json → 校验 → 生成 → 截图
+                                 # 配图偏好：无图引用须 --无图 显式放行
   python 流水线.py 总览                      # S4：汇总全部 PNG，待用户拍板
   python 流水线.py 总览确认                  # S4 拍板 → S5
   python 流水线.py 导出                      # S5：导出程序待建，占位
@@ -25,7 +26,8 @@ import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from 基座 import OK, FAIL, USAGE, ERR, read_json, die, project_dir, RULES_DIR
+from 基座 import OK, FAIL, USAGE, ERR, read_json, die, project_dir, RULES_DIR, LIB_DIR
+import re as _re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
@@ -133,6 +135,10 @@ def placeholder(field, tpl, ctx):
     if field == "branches":
         return [{"cond": "条件A", "result": "结果A", "d": "占位"},
                 {"cond": "条件B", "result": "结果B", "d": "占位"}]
+    if field == "nodes" and tpl == "timeline":
+        return [{"t": "阶段一", "h": "里程碑一", "d": "占位说明"},
+                {"t": "阶段二", "h": "里程碑二", "d": "占位说明"},
+                {"t": "阶段三", "h": "里程碑三", "d": "占位说明"}]
     if field == "nodes":
         return ["节点一", "节点二", "节点三"]
     if field == "edges":
@@ -193,8 +199,33 @@ def cmd_需求(proj, st, a):
     p = os.path.join(proj, "需求.md")
     if not os.path.isfile(p):
         die("S0：找不到 %s，请先写需求" % p, code=USAGE)
-    print(open(p, encoding="utf-8").read())
-    print("\n---- S0 需求确认：看完没问题跑 `python 流水线.py 需求确认` ----")
+    需求txt = open(p, encoding="utf-8").read()
+    print(需求txt)
+    # S0 主题推荐：按需求文本匹配库内主题，给 3 个选择（2026-10-05 chengge：任意输入都要能推荐）
+    print("\n  —— 主题推荐（按你的需求匹配） ——")
+    try:
+        from 主题推荐 import 推荐 as _推荐
+        候选, 命中 = _推荐(需求txt, top=3)
+        if not 命中:
+            print("  库内无明确匹配，先看 3 个风格迥异的；都不喜欢可走 T0–T4 新建主题。")
+        for i, (分, th, 理由) in enumerate(候选, 1):
+            print("  【%d】%s（%s）" % (i, th["name"], th["状态"][:2]))
+            print("      %s" % th["一句话"][:70])
+            if 理由:
+                print("      匹配：" + "；".join(理由))
+        print('  拍板：把选中的主题名告诉我（或说"都不喜欢，新建"走 T0–T4）。')
+    except Exception as e:
+        print("  （推荐程序异常：%s，改看全库清单）" % e)
+    print("\n  库内全主题（备选）：")
+    卡dir = os.path.join(LIB_DIR, "主题", "卡片")
+    for f in sorted(os.listdir(卡dir)):
+        if f.startswith("主题卡-") and f.endswith(".md"):
+            name = f[len("主题卡-"):-len(".md")]
+            txt = io.open(os.path.join(卡dir, f), encoding="utf-8").read()
+            m = _re.search(r"## 一句话\n+(.*?)(?:\n## |\Z)", txt, _re.S)
+            一句话 = m.group(1).strip().split("\n")[0] if m else ""
+            print("    [%s] %s" % (name, 一句话[:60]))
+    print("\n---- S0 需求确认：主题定后写入需求.md（设 PPT_THEME_CSS），没问题跑 `python 流水线.py 需求确认` ----")
     st["阶段"] = "S0"
     save_state(proj, st)
     return OK
@@ -208,6 +239,38 @@ def cmd_需求确认(proj, st, a):
     return OK
 
 
+def 候选_for(sel, 意图, 关系=None):
+    """v2 选型：意图 + 关系 → 候选 tpl 列表。关系缺失时返回全量（向后兼容）。"""
+    entries = sel["映射"][意图]
+    if isinstance(entries, list) and entries and isinstance(entries[0], dict):
+        if 关系:
+            return [e["tpl"] for e in entries if 关系 in e.get("关系", [])]
+        return [e["tpl"] for e in entries]
+    return list(entries)  # v1 纯列表格式
+
+
+def 何时用(sel, 意图, tpl):
+    entries = sel["映射"][意图]
+    if isinstance(entries, list) and entries and isinstance(entries[0], dict):
+        for e in entries:
+            if e["tpl"] == tpl:
+                return e.get("何时用", "")
+    return ""
+
+
+def 读页型卡(tpl):
+    """读库内页型卡，提取适用场景与纪律（P0 布局时作为上下文输入）。"""
+    p = os.path.join(LIB_DIR, "页型", "卡片", "页型卡-%s.md" % tpl)
+    if not os.path.isfile(p):
+        return "", ""
+    txt = io.open(p, encoding="utf-8").read()
+
+    def section(name):
+        m = _re.search(r"## " + name + r"\n+(.*?)(?:\n## |\Z)", txt, _re.S)
+        return m.group(1).strip() if m else ""
+    return section("适用场景"), section("纪律")
+
+
 def cmd_大纲(proj, st, a):
     if not st["需求确认"]:
         die("S1：需求未定，先跑 `需求` → `需求确认`", code=USAGE)
@@ -217,6 +280,7 @@ def cmd_大纲(proj, st, a):
     drafts = read_json(p)
     sel = read_json(os.path.join(RULES_DIR, "选型规约.json"))
     意图集 = set(sel["映射"].keys())
+    关系集 = set(sel.get("关系闭集", []))
     for i, g in enumerate(drafts):
         for f in ("页id", "意图", "标题"):
             if f not in g:
@@ -224,14 +288,18 @@ def cmd_大纲(proj, st, a):
         if g["意图"] not in 意图集:
             die("S1：条目#%d 意图 %r 不在选型规约意图闭集内，合法为: %s"
                 % (i, g["意图"], sorted(意图集)), code=FAIL)
+        if "关系" in g and g["关系"] not in 关系集:
+            die("S1：条目#%d 关系 %r 不在关系闭集内，合法为: %s"
+                % (i, g["关系"], sorted(关系集)), code=FAIL)
     st["大纲草案"] = drafts
     st["阶段"] = "S1"
     save_state(proj, st)
-    print("大纲草案（%d 页），意图全部在闭集内：" % len(drafts))
+    print("大纲草案（%d 页），意图/关系全部在闭集内：" % len(drafts))
     for i, g in enumerate(drafts):
-        候选 = sel["映射"][g["意图"]]
-        print("  %02d. %s 意图=%s 标题=%s 候选=%s"
-              % (i + 1, g["页id"], g["意图"], g["标题"], 候选))
+        候选 = 候选_for(sel, g["意图"], g.get("关系"))
+        print("  %02d. %s 意图=%s 关系=%s 标题=%s 候选=%s"
+              % (i + 1, g["页id"], g["意图"], g.get("关系", "（未填）"),
+                 g["标题"], 候选))
     print("\n---- S1 大纲拍板：没问题跑 `python 流水线.py 大纲确认` ----")
     return OK
 
@@ -257,7 +325,30 @@ def cmd_布局(proj, st, a):
         die("大纲已走完，跑 `总览`", code=USAGE)
     g = st["大纲"][st["当前页"]]
     sel = read_json(os.path.join(RULES_DIR, "选型规约.json"))
-    候选 = sel["映射"][g["意图"]]
+    关系 = g.get("关系")
+    候选 = 候选_for(sel, g["意图"], 关系)
+    if not 关系:
+        print("  提示：大纲条目缺 关系 字段，已按意图全量候选；建议补上（并列/流程/图文/对照/结构）。")
+    print("  版式原则：")
+    for p in sel.get("版式原则", []):
+        print("    · " + p)
+    print("  候选页型（意图=%s，关系=%s）：已加载页型卡知识" % (g["意图"], 关系 or "未填"))
+    for t in 候选:
+        print("    [%s] %s" % (t, 何时用(sel, g["意图"], t)))
+        适用, 纪律 = 读页型卡(t)
+        if 适用:
+            print("      适用：%s" % " / ".join(适用.split("\n")[:3]))
+        if 纪律:
+            print("      纪律：%s" % " / ".join(纪律.split("\n")[:3]))
+    # 节奏提示：前两页用了什么版式
+    prev_t = []
+    for done_g in st["大纲"][:st["当前页"]]:
+        s = st.get("选型", {}).get(done_g["页id"], {})
+        if s.get("选中"):
+            prev_t.append(s["选中"])
+    prev_t = prev_t[-2:]
+    if len(prev_t) == 2 and prev_t[0] == prev_t[1]:
+        print("  节奏提示：前两页已连续使用 %s，再用一次将触发 连续3页同版式 WARN。" % prev_t[0])
     rules = read_json(os.path.join(RULES_DIR, "卡型规约.json"))["页面条目"]
     ctx = {"页id": g["页id"], "标题": g["标题"],
            "序号": st["当前页"] + 1, "总页数": len(st["大纲"]),
@@ -280,7 +371,8 @@ def cmd_布局(proj, st, a):
         if code != 0:
             die("布局预览截图失败:\n%s" % out, code=FAIL)
         pngs[d["tpl"]] = html[:-5] + ".png"
-    st["待选"] = {"页id": g["页id"], "意图": g["意图"], "候选": 候选, "预览": pngs}
+    st["待选"] = {"页id": g["页id"], "意图": g["意图"], "关系": 关系,
+                 "候选": 候选, "预览": pngs}
     st["阶段"] = "S2"
     save_state(proj, st)
     print("页 %s（意图=%s）布局候选预览：" % (g["页id"], g["意图"]))
@@ -299,12 +391,14 @@ def cmd_布局选(proj, st, a):
         die("S2：tpl=%r 不在候选 %s 内" % (a.tpl, t["候选"]), code=USAGE)
     if not a.理由:
         die("S2：--理由 必填（留痕）", code=USAGE)
-    st["选型"][t["页id"]] = {"意图": t["意图"], "候选": t["候选"],
+    st["选型"][t["页id"]] = {"意图": t["意图"], "关系": t.get("关系"),
+                           "候选": t["候选"],
                            "选中": a.tpl, "理由": a.理由}
     st["待选"] = None
     st["阶段"] = "S3"
     log(st, "S2 拍板：%s 选 %s（%s）→ S3 做页" % (t["页id"], a.tpl, a.理由))
     save_state(proj, st)
+    print("  P2 写数据前必读：库/页型/卡片/页型卡-%s.md（数据字段表）" % a.tpl)
     return OK
 
 
@@ -328,6 +422,12 @@ def cmd_做页(proj, st, a):
     if missing:
         die("S3 P1 门：素材缺失 %s，先走 M1–M3 生图登记再跑 `做页`"
             % missing, code=FAIL)
+    # 配图偏好软闸（chengge 倾向）：无任何图片引用须显式放行
+    if not acc and not a.无图:
+        die("S3 配图偏好：本页无任何图片引用。先走 P1/M1–M3 生图配图；"
+            "确认无图可做时传 --无图 \"理由\" 显式放行", code=FAIL)
+    if not acc and a.无图:
+        log(st, "配图偏好放行（无图）: %s 理由=%s" % (页id, a.无图))
     # P2→闸→P3→P4
     pages_path = os.path.join(proj, "页", "pages.json")
     pages = read_json(pages_path) if os.path.isfile(pages_path) else []
@@ -386,9 +486,12 @@ def cmd_总览确认(proj, st, a):
 def cmd_导出(proj, st, a):
     if st["阶段"] != "S5":
         die("S5：先完成 S4 整篇拍板", code=USAGE)
-    print("E1 导出程序待建：从 <项目>/页/pages.json 原生构建可编辑 PPTX"
-          "（不做 PNG 贴图）。整篇已过审，可以开始写导出程序。")
+    code, out = run_prog([os.path.join(HERE, "pptx导出.py")], proj)
+    print(out)
+    if code != 0:
+        die("E1 PPTX 导出失败", code=FAIL)
     st["阶段"] = "DONE"
+    log(st, "S5 导出：原生可编辑 PPTX 已生成（非 PNG 贴图）")
     save_state(proj, st)
     return OK
 
@@ -406,6 +509,7 @@ def main():
     ap.add_argument("cmd", choices=sorted(CMDS.keys()))
     ap.add_argument("tpl", nargs="?", default=None)
     ap.add_argument("--理由", default=None)
+    ap.add_argument("--无图", default=None, help="配图偏好放行理由（做页无图时必填）")
     a = ap.parse_args()
     proj = project_dir()
     st = load_state(proj)

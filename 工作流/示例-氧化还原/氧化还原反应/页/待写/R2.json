@@ -1,0 +1,9 @@
+{"id": "R2", "tpl": "toc_grid", "brow": "Chemistry · Advanced", "no": "02 / 12",
+ "title": "学习导航", "sub": "从电子得失，到配平应用",
+ "en": "Redox · Learning Path",
+ "foot": "四个模块 · 一条「本质—判断—配平—应用」主线",
+ "cards": [
+  {"no": "01 / DISCOVER", "zh": "认识氧化还原", "desc": "本质 · 化合价 · 电子转移", "img": "redox-electron.png", "contain": true},
+  {"no": "02 / ANALYZE", "zh": "氧化剂与还原剂", "desc": "得失电子 · 强弱判断", "img": "redox-reagents.png"},
+  {"no": "03 / METHOD", "zh": "配平方法", "desc": "电子守恒 · 步骤拆解", "img": "redox-balance.png"},
+  {"no": "04 / APPLY", "zh": "身边的氧化还原", "desc": "电池 · 冶炼 · 呼吸", "img": "redox-battery.png"}]}

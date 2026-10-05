@@ -11,9 +11,18 @@
       "--silver",
       "--muted",
       "--line",
-      "--card"
+      "--line-dark",
+      "--card",
+      "--ox",
+      "--ink-dark"
     ],
-    "说明": "主题 CSS 必须定义的配色令牌（定案 D1 的机检清单）。校验器逐个 grep 主题 CSS，缺一即 FAIL。"
+    "说明": "主题 CSS 必须定义的配色令牌（定案 D1 的机检清单）。校验器逐个 grep 主题 CSS，缺一即 FAIL；并按 对比度 阈值机检对比度，不达标即 FAIL（正文 ink/bg ≥7.0 为投影线，严于 WCAG，见设计规约）。",
+    "对比度": {
+      "ink/bg": 7.0,
+      "gold/bg": 3.0,
+      "ox/bg": 3.0,
+      "ink-dark/bg-dark": 4.5
+    }
   },
   "位置": "工作流/规约/卡型规约.json",
   "兜底": {
@@ -124,20 +133,22 @@
         "no",
         "kick",
         "title",
-        "img",
-        "cap",
         "steps",
         "warn",
         "foot"
       ],
-      "说明": "图文因果页（左图右编号链 + 提示框）",
-      "选填": []
+      "说明": "图文因果页（左图右编号链 + 提示框）img/tag/cap 为选填：无图时模板走纯文字分支，且须经 --无图 \"理由\" 显式放行（配图偏好软闸）。",
+      "选填": [
+        "img",
+        "cap"
+      ]
     },
     "photo_props": {
       "b闭集": [
         "ink",
         "green",
-        "gold"
+        "gold",
+        "ox"
       ],
       "rows必填": [
         "b",
@@ -150,15 +161,16 @@
         "no",
         "kick",
         "title",
-        "img",
-        "tag",
-        "cap",
         "rows",
         "concl",
         "foot"
       ],
-      "说明": "图文性质页（左图右色块标签行 + 结论条）。知识页禁止裸列表（纪律）。",
-      "选填": []
+      "说明": "图文性质页（左图右色块标签行 + 结论条）。知识页禁止裸列表（纪律）。img/tag/cap 为选填：无图时模板走纯文字分支，且须经 --无图 \"理由\" 显式放行（配图偏好软闸）。",
+      "选填": [
+        "img",
+        "tag",
+        "cap"
+      ]
     },
     "section": {
       "必填": [
@@ -170,8 +182,10 @@
         "sub",
         "foot"
       ],
-      "说明": "章节页（深底 ghost 编号）。sub 为字符串数组。",
-      "选填": []
+      "说明": "章节页（深底 ghost 编号）。sub 为字符串数组。tone 选填：light=浅色章节页（米白底+浅青大数字），缺省=深色。",
+      "选填": [
+        "tone"
+      ]
     },
     "toc_grid": {
       "cards必填": [
@@ -203,7 +217,14 @@
       "photo_chain",
       "table_compare",
       "flow_branch",
-      "flow_cycle"
+      "flow_cycle",
+      "timeline",
+      "cards3",
+      "stepper",
+      "equation_hero",
+      "chart",
+      "kpi_hero",
+      "cover_split"
     ],
     "说明": "pages.json 的条目规约（按 tpl 分）。tpl 为闭集，未知 tpl 即拒。校验器按此校验。",
     "通用必填": [
@@ -265,6 +286,203 @@
         "to",
         "label"
       ]
+    },
+    "timeline": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "nodes",
+        "concl",
+        "foot"
+      ],
+      "说明": "时间线页：nodes 3–6 项，每项 t/h/d"
+    },
+    "cards3": {
+      "b闭集": [
+        "ink",
+        "green",
+        "gold",
+        "ox"
+      ],
+      "cards必填": [
+        "b",
+        "k",
+        "n",
+        "d"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "cards",
+        "concl",
+        "foot"
+      ],
+      "选填": [],
+      "说明": "横向三卡片（并列三条横向排布+结论条沉底）。cards 固定 3 项；b 决定卡片顶边色与徽章色。行内标签：em 标绿、span.ox 标暖橙、b 标金。"
+    },
+    "stepper": {
+      "steps必填": [
+        "t",
+        "d"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "steps",
+        "warn",
+        "foot"
+      ],
+      "选填": [],
+      "说明": "横向步骤条（流程 2–4 步横向排布+提示框沉底）。行内标签：b 标金。"
+    },
+    "equation_hero": {
+      "b闭集": [
+        "ink",
+        "green",
+        "gold",
+        "ox"
+      ],
+      "cards必填": [
+        "b",
+        "k",
+        "n",
+        "d"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "eq",
+        "cards",
+        "concl",
+        "foot"
+      ],
+      "选填": [
+        "eqlabel"
+      ],
+      "说明": "方程式 hero（中央大方程式+三横卡+结论条沉底）。eq 为方程式 HTML（可用 <sub>/<sup>）；cards 固定 3 项，b 决定卡片左边色。"
+    },
+    "chart": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "foot"
+      ],
+      "选填": [
+        "cap",
+        "insight"
+      ],
+      "说明": "图表页：图表由程序/图表.py生成；标题断言式；图注须有数据来源"
+    },
+    "kpi_hero": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "kpis",
+        "foot"
+      ],
+      "选填": [
+        "concl"
+      ],
+      "说明": "KPI英雄页：1-4个数字，巨型数字+上下文，标1个主角"
+    },
+    "cover_split": {
+      "必填": [
+        "img",
+        "eyebrow",
+        "title",
+        "en",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "corner"
+      ],
+      "说明": "封面左右分栏：左60%文字，右40%图，金线分界"
+    },
+    "infographic": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "items",
+        "foot"
+      ],
+      "选填": [
+        "concl",
+        "bg",
+        "mask"
+      ],
+      "items必填": [
+        "icon",
+        "v",
+        "label"
+      ],
+      "items选填": [
+        "d"
+      ],
+      "说明": "信息图：图标+数字+说明，2-4项横向。icon为图标库中文名（程序/图标.py --列表）。"
+    },
+    "compare_bars": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "rows",
+        "foot"
+      ],
+      "选填": [
+        "a_name",
+        "b_name",
+        "concl",
+        "bg"
+      ],
+      "rows必填": [
+        "label",
+        "a",
+        "b"
+      ],
+      "说明": "对比条：两组数据横向条形对比，1-6行。a组金色强调。"
+    },
+    "number_hero": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "v",
+        "label",
+        "foot"
+      ],
+      "选填": [
+        "d",
+        "ctx",
+        "icon",
+        "bg"
+      ],
+      "说明": "大数字：一页一个数字做视觉 hammer（200px）。icon可选。"
     }
+  },
+  "全局选填": {
+    "notes": "演讲者备注（字符串或字符串数组）→ PPTX 备注页。写讲稿要点、数据出处、过渡语。",
+    "build": "分步构建：list of 字段补丁，每步多一张幻灯片（python-pptx 无动画，用构建页模拟）。如 stepper 的 steps 逐条出现。",
+    "说明": "所有页型通用，不写不报错。校验.py 不强制，但写了必须非空。",
+    "bg": "背景纹理：dots/grid/diagonal/mesh/glow。body class 级，全页生效，低透明度不抢内容。",
+    "mask": "图片蒙版：circle/rounded/blob/arch。拼到图片容器 class，圆角/异形裁切。",
+    "transition": "切换效果：fade/push/wipe/split/blinds/dissolve/cover/uncover。→ PPTX 页面切换。"
   }
 }

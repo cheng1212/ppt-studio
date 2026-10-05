@@ -1,0 +1,9 @@
+{"id": "R11", "tpl": "photo_props", "brow": "02 · Method", "no": "11 / 12",
+ "kick": "AROUND US", "title": "氧化还原<span class=\"q\">在身边</span>",
+ "img": "redox-battery.png", "tag": "<b>应用</b>视角", "cap": "锂电池：定向的电子转移",
+ "rows": [
+  {"b": "green", "k": "呼吸作用", "n": "<em>缓慢氧化</em>", "d": "C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O，释放能量"},
+  {"b": "gold", "k": "金属冶炼", "n": "<em>还原提取</em>", "d": "Fe₂O₃ + 3CO → 2Fe + 3CO₂，高炉炼铁"},
+  {"b": "ink", "k": "电池", "n": "<em>定向电子流</em>", "d": "原电池把氧化还原的电子转移变成电流"}],
+ "concl": "氧化还原不在课本里，<b>在每一次呼吸和每一度电里</b>",
+ "foot": "应用视角 · 学以致用"}

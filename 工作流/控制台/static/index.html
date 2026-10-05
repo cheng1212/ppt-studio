@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PPT Studio 控制台</title>
+<style>
+:root{--bg:#0f1115;--card:#171a21;--line:#262b36;--ink:#f2f4f8;--muted:#8b93a5;
+--gold:#f5a623;--green:#34d17b;--radius:12px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh}
+header{padding:20px 32px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px}
+header h1{font-size:20px;letter-spacing:.1em}
+header .sub{color:var(--muted);font-size:13px}
+main{max-width:1200px;margin:0 auto;padding:32px}
+.steps{display:flex;gap:8px;margin-bottom:32px}
+.step{flex:1;text-align:center;padding:12px;border:1px solid var(--line);border-radius:var(--radius);color:var(--muted);font-size:14px;cursor:pointer}
+.step.active{border-color:var(--gold);color:var(--gold)}
+.step.done{color:var(--green);border-color:var(--green)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+h2{font-size:18px;margin-bottom:16px}
+h3{font-size:15px;margin:16px 0 8px;color:var(--gold)}
+input[type=text],textarea,select{background:#0c0e12;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:10px 14px;font-size:14px;width:100%}
+textarea{min-height:80px;resize:vertical}
+.btn{background:var(--gold);color:#111;border:none;border-radius:8px;padding:12px 28px;font-size:15px;font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn.small{padding:6px 14px;font-size:13px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.chip{background:#0c0e12;border:1px solid var(--line);border-radius:20px;padding:6px 14px;font-size:13px;color:var(--muted)}
+.chip b{color:var(--gold)}
+.themes{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.theme{border:2px solid var(--line);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:.2s}
+.theme:hover{border-color:var(--muted)}
+.theme.sel{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold)}
+.theme img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;background:#000}
+.theme .info{padding:14px}
+.theme .info .name{font-size:16px;font-weight:700}
+.theme .info .desc{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}
+.theme .info .why{font-size:12px;color:var(--green);margin-top:8px}
+.pages{display:flex;flex-direction:column;gap:12px}
+.page{border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.page .ph{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.page .ph .pid{font-weight:700;color:var(--gold)}
+.page .ph .intent{font-size:13px;color:var(--muted)}
+.page .ph select{width:220px;margin-left:auto}
+.page .hint{font-size:12px;color:var(--muted);background:#0c0e12;border-radius:8px;padding:10px 12px;margin-bottom:12px;line-height:1.7}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.thumb{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.thumb img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover}
+.thumb .cap{padding:8px 12px;font-size:12px;color:var(--muted)}
+.row{display:flex;gap:12px;align-items:center;margin-top:20px}
+.loading{color:var(--muted);padding:40px;text-align:center}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+<h1>PPT STUDIO</h1><span class="sub">一句话 → 专业 PPT · 图形化控制台</span>
+</header>
+<main>
+<div class="steps" id="steps">
+<div class="step active" data-s="1">1 · 需求</div>
+<div class="step" data-s="2">2 · 主题</div>
+<div class="step" data-s="3">3 · 大纲版式</div>
+<div class="step" data-s="4">4 · 预览导出</div>
+</div>
+
+<!-- Step 1 -->
+<div id="s1">
+<div class="card">
+<h2>一句话说出你的需求</h2>
+<input type="text" id="req" placeholder="比如：双11大促战报 / 光合作用课件 / 融资路演BP" style="font-size:16px;padding:14px 18px">
+<div class="row"><button class="btn" onclick="analyze()">分析需求 →</button></div>
+<div id="intent" class="hidden">
+<h3>我读懂的意图</h3>
+<div class="chips" id="chips"></div>
+</div>
+</div>
+</div>
+
+<!-- Step 2 -->
+<div id="s2" class="hidden">
+<div class="card">
+<h2>选一个主题 <span style="font-size:13px;color:var(--muted)">（点卡片选中）</span></h2>
+<div class="themes" id="themes"></div>
+<div class="row"><button class="btn ghost" onclick="go(1)">← 上一步</button>
+<button class="btn" onclick="go(3)">下一步：大纲版式 →</button></div>
+</div>
+</div>
+
+<!-- Step 3 -->
+<div id="s3" class="hidden">
+<div class="card">
+<h2>大纲 · 每页选版式填内容</h2>
+<p style="color:var(--muted);font-size:13px;margin-bottom:16px">版式下拉框有 18 种可选；字段按提示填写，空着也行（先出布局预览）。<span style="color:var(--gold)">图表页的数据填 JSON，如 {"华东":128,"华南":96}</span></p>
+<div class="pages" id="pages"></div>
+<div class="row">
+<button class="btn ghost" onclick="go(2)">← 上一步</button>
+<button class="btn" onclick="addPage()">+ 加一页</button>
+<button class="btn" onclick="preview()">生成预览 →</button>
+</div>
+</div>
+</div>
+
+<!-- Step 4 -->
+<div id="s4" class="hidden">
+<div class="card">
+<h2>预览</h2>
+<div id="thumbs" class="thumbs"><div class="loading">点"生成预览"后显示…</div></div>
+<div class="row">
+<button class="btn ghost" onclick="go(3)">← 回去改</button>
+<button class="btn" onclick="exportPPT()">导出 PPTX ↓</button>
+</div>
+</div>
+</div>
+</main>
+
+<script>
+let S = {intent:{}, themes:[], theme:null, outline:[], tpls:[]};
+
+function go(n){
+  document.querySelectorAll('.step').forEach(e=>{
+    const s=+e.dataset.s;
+    e.classList.toggle('active', s===n);
+    if(s<n) e.classList.add('done');
+  });
+  [1,2,3,4].forEach(i=>document.getElementById('s'+i).classList.toggle('hidden', i!==n));
+  window.scrollTo(0,0);
+}
+async function api(url, body){
+  const r = await fetch(url, {method: body?'POST':'GET',
+    headers:{'Content-Type':'application/json'},
+    body: body?JSON.stringify(body):undefined});
+  return r.json();
+}
+async function analyze(){
+  const v = document.getElementById('req').value.trim();
+  if(!v) return alert('先写一句话需求');
+  const d = await api('/api/一句话', {输入:v});
+  if(d.error) return alert(d.error);
+  S.intent = d.intent; S.themes = d.主题推荐; S.outline = d.页;
+  document.getElementById('intent').classList.remove('hidden');
+  document.getElementById('chips').innerHTML =
+    Object.entries(d.意图).map(([k,v])=>`<span class="chip">${k} <b>${v}</b></span>`).join('');
+  document.getElementById('themes').innerHTML = d.主题推荐.map((t,i)=>`
+    <div class="theme" data-i="${i}" onclick="pickTheme(${i})">
+      <img src="${t.样张}" loading="lazy">
+      <div class="info"><div class="name">${t.主题} <span style="font-size:11px;color:var(--muted)">${t.状态}</span></div>
+      <div class="why">${t.理由.join('；')}</div></div>
+    </div>`).join('');
+  try{ S.tpls = await api('/api/页型列表'); }catch(e){ S.tpls=[]; }
+  go(2);
+}
+function pickTheme(i){
+  S.theme = S.themes[i].主题;
+  document.querySelectorAll('.theme').forEach((e,j)=>e.classList.toggle('sel', j===i));
+  buildPages();
+}
+function buildPages(){
+  const box = document.getElementById('pages');
+  box.innerHTML = '';
+  S.outline.forEach((p,idx)=>box.appendChild(pageEl(p, idx)));
+}
+function pageEl(p, idx){
+  const d = document.createElement('div');
+  d.className='page'; d.dataset.idx=idx;
+  const tpls = p.tpl建议.map(t=>`<option ${t===p.tpl建议[0]?'selected':''}>${t}</option>`).join('');
+  d.innerHTML = `
+    <div class="ph"><span class="pid">${p.页}</span>
+      <span class="intent">意图：${p.意图}</span>
+      <select class="tplsel">${tpls}</select>
+      <button class="btn ghost small" onclick="this.closest('.page').remove()">删除</button>
+    </div>
+    <div class="hint">💡 ${p.文案提示}</div>
+    <div class="fields">
+      <div class="field"><label>标题 title（断言式）</label><input type="text" data-f="title"></div>
+      <div class="field"><label>眉题 brow / 编号 no</label><input type="text" data-f="browno" placeholder="01 · 总览 / 02"></div>
+      <div class="field"><label>英文 kick</label><input type="text" data-f="kick"></div>
+      <div class="field"><label>页脚 foot</label><input type="text" data-f="foot"></div>
+      <div class="field" style="grid-column:1/-1"><label>内容数据（JSON，按版式填：kpis/items/rows/图表数据…）</label>
+        <textarea data-f="data" placeholder='如 {"kpis":[{"v":"3.6亿","label":"GMV","ctx":"▲32%"}]}'></textarea></div>
+      <div class="field"><label>背景 bg</label><select data-f="bg">
+        <option value="">无</option><option>dots</option><option>grid</option>
+        <option>diagonal</option><option>mesh</option><option>glow</option></select></div>
+      <div class="field"><label>切换 transition</label><select data-f="transition">
+        <option value="">无</option><option>fade</option><option>push</option><option>wipe</option></select></div>
+    </div>`;
+  return d;
+}
+function addPage(){
+  const n = document.querySelectorAll('.page').length+1;
+  S.outline.push({页:'P'+n, 意图:'特征', tpl建议:['cards3'], 文案提示:'自定义页'});
+  document.getElementById('pages').appendChild(pageEl(S.outline[S.outline.length-1], n-1));
+}
+function collect(){
+  const pages=[];
+  document.querySelectorAll('.page').forEach((el,i)=>{
+    const g = n=>el.querySelector(`[data-f="${n}"]`).value.trim();
+    const p = {id:'P'+(i+1), tpl: el.querySelector('.tplsel').value,
+      brow: g('browno').split('/')[0].trim()||'',
+      no: (g('browno').split('/')[1]||'').trim(),
+      kick: g('kick'), title: g('title'), foot: g('foot')};
+    try{ const d = g('data'); if(d) Object.assign(p, JSON.parse(d)); }catch(e){ p._err='数据JSON格式错误'; }
+    if(g('bg')) p.bg=g('bg');
+    if(g('transition')) p.transition=g('transition');
+    pages.push(p);
+  });
+  return pages;
+}
+async function preview(){
+  const pages = collect();
+  const bad = pages.find(p=>p._err);
+  if(bad) return alert(bad.id+': '+bad._err);
+  document.getElementById('thumbs').innerHTML='<div class="loading">渲染中…</div>';
+  go(4);
+  const r = await api('/api/渲染页', {主题:S.theme, pages});
+  if(r.error) { document.getElementById('thumbs').innerHTML='<div class="loading">失败：'+r.error+'</div>'; return; }
+  let h='';
+  for(let i=0;i<r.页数;i++) h+=`<div class="thumb"><img src="/api/缩略图?i=${i}&t=${Date.now()}" loading="lazy"><div class="cap">P${i+1}</div></div>`;
+  document.getElementById('thumbs').innerHTML=h;
+}
+async function exportPPT(){
+  const pages = collect();
+  const r = await fetch('/api/导出', {method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({主题:S.theme, pages})});
+  if(!r.ok){ const j=await r.json(); return alert('导出失败：'+(j.error||r.status)); }
+  const blob = await r.blob();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download='ppt-studio.pptx'; a.click();
+}
+document.querySelectorAll('.step').forEach(e=>e.onclick=()=>{ if(e.classList.contains('done')) go(+e.dataset.s); });
+</script>
+</body>
+</html>
