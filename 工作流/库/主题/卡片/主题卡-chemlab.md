@@ -61,3 +61,33 @@
 
 - 本主题为库内首个浅色通用模板主题；与 deepsea 共用 12 令牌骨架。
 - --ox 在本主题中泛化为"强调/提醒"色，不只用于氧化语义（深色主题的氧化橙语义编码是 deepsea 的局部约定，不进入骨架）。
+
+## 字体与字号
+
+- 中文：思源黑体 / Noto Sans CJK SC / Source Han Sans SC / Microsoft YaHei / PingFang SC；英文眉题/数字：Georgia serif；化学方程式：Cambria / STIX Two Math
+- 字号阶（16:9 @1920）：页标题 64px / 章节标题 118px / 数字 hammer 200px / 正文 34px / 正文窄 45px / 说明 22px
+- 眉题类 Georgia 衬线 + 金色，投影下限：正文不小于 16pt（设计规约·字号）
+
+## 间距
+
+- 页边距 --mx: 120px
+- 页头起始 --head-top: 126px
+- space 阶梯：--space-1 8px（相关项）/ --space-2 16px（区块）/ --space-3 32px（大分区）
+
+## 页眉页脚系统
+
+- 页眉：左 brow（Georgia 衬线）+ 右 pageno（页码），top 60px
+- 页脚：发丝线 + 右注 foot（沿用骨架页脚系统）
+- 封面/章节页用深底变体（--bg-dark scrim 压字）
+
+## 结构件清单
+
+色块标签（badge）/ 结论条（concl）/ 编号圆 / 因果箭头 / 发丝线（沿用库结构件；反对过度卡片化，见问卷 Q7）
+
+## css路径
+
+库/theme-chemlab.css（本卡令牌表的执行形态；校验器按规约主题令牌逐个核对存在）
+
+## 下游
+
+暂无（2026-10-05 建卡，待首个下游项目；示例-化学钠用 sodium 主题）

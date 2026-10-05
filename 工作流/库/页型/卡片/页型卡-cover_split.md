@@ -25,6 +25,7 @@
 | sub | 是 | 一句话副标题 |
 | foot | 是 | 左下注脚 |
 | corner | 否 | 右下角标注 |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
 
 ## 纪律
 

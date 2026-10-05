@@ -224,7 +224,10 @@
       "equation_hero",
       "chart",
       "kpi_hero",
-      "cover_split"
+      "cover_split",
+      "infographic",
+      "compare_bars",
+      "number_hero"
     ],
     "说明": "pages.json 的条目规约（按 tpl 分）。tpl 为闭集，未知 tpl 即拒。校验器按此校验。",
     "通用必填": [
@@ -297,7 +300,13 @@
         "concl",
         "foot"
       ],
-      "说明": "时间线页：nodes 3–6 项，每项 t/h/d"
+      "说明": "时间线页：nodes 3–6 项，每项 t/h/d",
+      "nodes必填": [
+        "t",
+        "h",
+        "d"
+      ],
+      "nodes选填": []
     },
     "cards3": {
       "b闭集": [
@@ -396,7 +405,15 @@
       "选填": [
         "concl"
       ],
-      "说明": "KPI英雄页：1-4个数字，巨型数字+上下文，标1个主角"
+      "说明": "KPI英雄页：1-4个数字，巨型数字+上下文，标1个主角",
+      "kpis必填": [
+        "v",
+        "label"
+      ],
+      "kpis选填": [
+        "ctx",
+        "hero"
+      ]
     },
     "cover_split": {
       "必填": [
@@ -423,16 +440,15 @@
       ],
       "选填": [
         "concl",
-        "bg",
-        "mask"
+        "bg"
       ],
       "items必填": [
-        "icon",
         "v",
         "label"
       ],
       "items选填": [
-        "d"
+        "d",
+        "icon"
       ],
       "说明": "信息图：图标+数字+说明，2-4项横向。icon为图标库中文名（程序/图标.py --列表）。"
     },

@@ -24,6 +24,7 @@
 | title | 是 | 章标题（118px） |
 | sub | 是 | 字符串或字符串数组，设问/引子（数组用 <br> 连接） |
 | foot | 是 | 底部注脚 |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
 
 | tone | 否 | light=浅色章节页（A 方案），缺省深色 |
 
