@@ -10,7 +10,7 @@ P2（写数据）→ P3（生成）之间必须过本闸：任一不过即 FAIL�
   python 校验.py --主题 <主题名>    # 追加校验主题卡 + 主题 CSS 令牌
   python 校验.py --卡               # 卡库自校验：K1 四方一致 / K2 页型卡自检 /
                                    #   K3 卡表vs规约 / K4 模板读取vs卡表 /
-                                   #   K5 主题卡自检 / K6 pptx映射引用vs规约
+                                   #   K5 主题卡自检 / K6 pptx映射引用vs规约 / K7 版式族MECE
 
 校验项:
   ① 条目通用必填（id/tpl）齐
@@ -311,7 +311,7 @@ def main_卡():
             if not any(need in s for s in secs):
                 errors.append("K2 页型卡-%s 缺正文节 %r" % (tpl, need))
         模板对应节 = next((s for s in secs if "模板对应" in s), "模板对应")
-        fns = set(re.findall(r"(t_\w+)", _卡_节正文(card_path, 模板对应节)))
+        fns = set(re.findall(r"(?<!\w)(t_\w+)", _卡_节正文(card_path, 模板对应节)))
         for fn in fns:
             if not re.search(r"^def %s\(" % fn, pg_src, re.M):
                 errors.append("K2 页型卡-%s 模板对应函数 %s 在页面生成.py 不存在"
@@ -392,6 +392,34 @@ def main_卡():
                 else:
                     errors.append(msg)
 
+    # ---- K7 版式族：MECE + 卡族一致 ----
+    族path = os.path.join(RULES_DIR, "版式族.json")
+    if not os.path.isfile(族path):
+        errors.append("K7 缺规约/版式族.json")
+    else:
+        族s = read_json(族path)["族"]
+        t2f, dup = {}, []
+        for fname, f in 族s.items():
+            for t in f.get("成员", []):
+                if t in t2f:
+                    dup.append(t)
+                t2f[t] = fname
+            if not f.get("何时用") or not f.get("选型口诀"):
+                errors.append("K7 版式族-%s 缺何时用/选型口诀" % fname)
+        for t in dup:
+            errors.append("K7 页型 %s 归属多族（MECE 破坏）" % t)
+        if set(t2f) != set(tpl_closed):
+            errors.append("K7 版式族成员与tpl闭集不一致：多 %s；缺 %s"
+                          % (sorted(set(t2f) - set(tpl_closed)),
+                             sorted(set(tpl_closed) - set(t2f))))
+        for tpl in tpl_closed:
+            p = os.path.join(卡dir, "页型卡-%s.md" % tpl)
+            head = _卡_读文件头(p)
+            want = t2f.get(tpl)
+            if head.get("版式族") != want:
+                errors.append("K7 页型卡-%s 版式族=%r，与规约 %r 不一致"
+                              % (tpl, head.get("版式族"), want))
+
     if errors:
         print("FAIL --卡 共 %d 项:" % len(errors))
         for e in errors:
@@ -399,7 +427,7 @@ def main_卡():
         return FAIL
     for w in warns:
         print("WARN:", w)
-    print("PASS --卡：K1–K6 全过（%d 页型 × %d 主题卡）"
+    print("PASS --卡：K1–K7 全过（%d 页型 × %d 主题卡）"
           % (len(tpl_in_cards), len([f for f in os.listdir(主题dir)
                                      if f.startswith("主题卡-")])))
     return OK
@@ -676,16 +704,36 @@ def main():
     if a.主题:
         card = os.path.join(LIB_DIR, "主题", "卡片", "主题卡-%s.md" % a.主题)
         if not os.path.isfile(card):
+            # 双模式变体（如 dangjian-dark）：卡与主卡共用，找 css路径 列出该 CSS 的卡
+            want = "theme-%s.css" % a.主题
+            for f in sorted(os.listdir(os.path.join(LIB_DIR, "主题", "卡片"))):
+                if f.startswith("主题卡-") and f.endswith(".md"):
+                    txt = io.open(os.path.join(LIB_DIR, "主题", "卡片", f),
+                                  encoding="utf-8").read()
+                    m = re.search(r"^- css路径:\s*(.+)$", txt, flags=re.M)
+                    if m and want in m.group(1):
+                        card = os.path.join(LIB_DIR, "主题", "卡片", f)
+                        break
+        if not os.path.isfile(card):
             errors.append("主题卡不存在: %s" % card)
-        css = None
+        css_list = []  # 双模式卡 css路径 可列多个（、/，分隔），逐个校验存在
         if os.path.isfile(card):
             for line in io.open(card, encoding="utf-8"):
                 if line.startswith("- css路径:"):
-                    css = line.split(":", 1)[1].strip().replace("库/", "", 1)
+                    raw = line.split(":", 1)[1].strip()
+                    for one in re.split(r"[、,，]", raw):
+                        one = one.strip().replace("库/", "", 1)
+                        if one:
+                            css_list.append(one)
+        for css in css_list:
+            css_path = os.path.join(LIB_DIR, css)
+            if not os.path.isfile(css_path):
+                errors.append("主题 CSS 不存在: %s" % css_path)
+        # 令牌/对比度/字号闸只查本次 --主题 命中的那个 CSS（变体查变体文件）
+        css_hit = "theme-%s.css" % a.主题
+        css = css_hit if css_hit in css_list else (css_list[0] if css_list else None)
         css_path = os.path.join(LIB_DIR, css) if css else None
-        if not css_path or not os.path.isfile(css_path):
-            errors.append("主题 CSS 不存在: %s" % (css_path or css))
-        else:
+        if css_path and os.path.isfile(css_path):
             body = io.open(css_path, encoding="utf-8").read()
             for tok in rules["主题令牌"]["令牌"]:
                 if tok not in body:
@@ -718,9 +766,9 @@ def main():
                     if not 1.8 <= ratio <= 2.5:
                         errors.append(
                             "字号 title/body = %.2f，不在 [1.8, 2.5]（设计规约·字号.比例关系）" % ratio)
-                if b and b < 32:
+                if b and b < 22:
                     errors.append(
-                        "正文字号 %dpx < 32px（投影 24pt 下限，设计规约·字号.机检）" % b)
+                        "正文字号 %dpx < 22px（v3 高级感调研：正文 22–28px；2026-10-06 校准，见设计规约·字号.机检）" % b)
 
     # 模板硬编码字号闸：页面生成.py 里不许出现 font-size:<数字>px，
     # 一律走 var(--fs-*)（2026-10-05 收敛 12 模板 41 处硬编码；相对单位 em 允许）

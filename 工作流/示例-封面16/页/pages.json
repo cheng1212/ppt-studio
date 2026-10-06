@@ -1,0 +1,195 @@
+[
+ {
+  "id": "C1",
+  "tpl": "cover",
+  "foot": "未来出行实验室",
+  "eyebrow": "SMART EV · 2026",
+  "title": "未来出行",
+  "en": "The Future of Mobility",
+  "sub": "智能电动汽车年度技术发布",
+  "corner": "2026",
+  "bg": "P1-bg.png"
+ },
+ {
+  "id": "C2",
+  "tpl": "cover_split",
+  "foot": "未来出行实验室",
+  "eyebrow": "THANK YOU",
+  "title": "谢谢观看",
+  "en": "Drive the Future",
+  "sub": "未来出行实验室 · 2026",
+  "corner": "2026",
+  "img": "P18-img.png"
+ },
+ {
+  "id": "C3",
+  "tpl": "cover_typo",
+  "foot": "未来出行实验室",
+  "eyebrow": "SMART EV · 2026",
+  "title": "电动车的<b>时代</b>",
+  "en": "The EV Era",
+  "sub": "智能电动汽车年度技术发布",
+  "corner": "2026"
+ },
+ {
+  "id": "C4",
+  "tpl": "cover_minimal",
+  "foot": "未来出行实验室",
+  "eyebrow": "FUTURE MOBILITY",
+  "title": "少即是多",
+  "sub": "未来出行实验室 · 2026 年度发布",
+  "corner": "2026"
+ },
+ {
+  "id": "C5",
+  "tpl": "cover_block",
+  "foot": "未来出行实验室",
+  "eyebrow": "FLAGSHIP",
+  "title": "旗舰轿车",
+  "en": "Flagship Sedan",
+  "sub": "一眼心动，一见倾心",
+  "corner": "2026",
+  "img": "P6-img.png",
+  "shape": "arch"
+ },
+ {
+  "id": "C6",
+  "tpl": "cover_duo",
+  "foot": "未来出行实验室",
+  "eyebrow": "SMART EV · 2026",
+  "title": "双色之美",
+  "en": "Duo Tone",
+  "sub": "品牌色 × 影像，一眼即品牌",
+  "corner": "2026",
+  "img": "P1-bg.png"
+ },
+ {
+  "id": "C7",
+  "tpl": "cover_diagonal",
+  "foot": "未来出行实验室",
+  "eyebrow": "SPEED · 2026",
+  "title": "速度与未来",
+  "en": "Speed & Future",
+  "sub": "为快而生，向未来而行",
+  "corner": "2026",
+  "img": "P1-bg.png"
+ },
+ {
+  "id": "C8",
+  "tpl": "cover_brand",
+  "foot": "未来出行实验室",
+  "eyebrow": "FUTURE MOBILITY LAB",
+  "title": "未来出行实验室",
+  "en": "Future Mobility Lab",
+  "sub": "智能电动汽车年度技术发布",
+  "corner": "2026"
+ },
+ {
+  "id": "C9",
+  "tpl": "cover_magazine",
+  "foot": "未来出行实验室",
+  "eyebrow": "VOL.2026",
+  "title": "未来出行",
+  "sub": "智能电动汽车年度特刊",
+  "kickers": [
+   {
+    "t": "年度旗舰 · 1020km 超长续航"
+   },
+   {
+    "t": "城市 NOA · 全量推送"
+   },
+   {
+    "t": "800V 高压 · 充电 10 分钟补 400km"
+   }
+  ],
+  "corner": "NO.2026",
+  "img": "P18-img.png"
+ },
+ {
+  "id": "C10",
+  "tpl": "cover_lux",
+  "foot": "未来出行实验室",
+  "eyebrow": "PRIVATE PREVIEW",
+  "title": "曜夜旗舰",
+  "en": "Noir Flagship",
+  "sub": "仅以此夜，敬未来",
+  "corner": "2026"
+ },
+ {
+  "id": "C11",
+  "tpl": "cover_collage",
+  "foot": "未来出行实验室",
+  "eyebrow": "SMART EV · 2026",
+  "title": "多面未来",
+  "sub": "城市 / 充电 / 座舱 / 远方",
+  "corner": "2026",
+  "imgs": [
+   {
+    "src": "P1-bg.png"
+   },
+   {
+    "src": "P18-img.png"
+   },
+   {
+    "src": "P2-img.png"
+   },
+   {
+    "src": "P6-img.png"
+   }
+  ]
+ },
+ {
+  "id": "C12",
+  "tpl": "cover_crop",
+  "foot": "未来出行实验室",
+  "eyebrow": "DETAIL",
+  "title": "细节之美",
+  "en": "Beauty in Detail",
+  "sub": "把每一处线条，都做到极致",
+  "corner": "2026",
+  "img": "P6-img.png"
+ },
+ {
+  "id": "C13",
+  "tpl": "cover_anchor",
+  "foot": "未来出行实验室",
+  "eyebrow": "SMART EV",
+  "num": "2026",
+  "title": "未来出行元年",
+  "sub": "这一年，电动化成为必答题",
+  "corner": "2026"
+ },
+ {
+  "id": "C14",
+  "tpl": "cover_fusion",
+  "foot": "未来出行实验室",
+  "eyebrow": "SMART EV · 2026",
+  "title": "人 · 车 · 城市",
+  "sub": "当科技融入生活",
+  "corner": "2026",
+  "img": "P1-bg.png",
+  "img2": "P9-img.png"
+ },
+ {
+  "id": "C15",
+  "tpl": "cover_band",
+  "foot": "未来出行实验室",
+  "eyebrow": "SMART EV · 2026",
+  "title": "年度技术发布",
+  "en": "Annual Tech Release",
+  "sub": "电池 / 智能 / 补能，三大技术一次讲透",
+  "corner": "2026",
+  "img": "P2-img.png"
+ },
+ {
+  "id": "C16",
+  "tpl": "cover_brush",
+  "foot": "未来出行实验室",
+  "eyebrow": "甲辰年 · 未来出行",
+  "title": "未来出行",
+  "en": "FUTURE MOBILITY",
+  "sub": "智能电动汽车年度技术发布",
+  "seal": "未来",
+  "corner": "2026"
+ }
+]

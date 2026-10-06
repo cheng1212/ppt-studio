@@ -1,0 +1,342 @@
+[
+  {
+    "id": "P1",
+    "tpl": "cover",
+    "eyebrow": "HISTORY · QIN DYNASTY",
+    "title": "秦末农民起义",
+    "en": "Peasant Uprisings at the End of Qin",
+    "sub": "王侯将相，宁有种乎？",
+    "foot": "初中历史 · 八年级上册",
+    "corner": "课件",
+    "_选型": {
+      "意图": "封面",
+      "候选": [
+        "cover",
+        "cover_split",
+        "cover_typo",
+        "cover_minimal",
+        "cover_block",
+        "cover_duo",
+        "cover_diagonal",
+        "cover_brand",
+        "cover_magazine",
+        "cover_lux",
+        "cover_collage",
+        "cover_crop",
+        "cover_anchor",
+        "cover_fusion",
+        "cover_band",
+        "cover_brush"
+      ],
+      "选中": "cover",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    },
+    "bg": "P1-bg.png"
+  },
+  {
+    "id": "P2",
+    "tpl": "cards3",
+    "brow": "初中历史",
+    "no": "02",
+    "kick": "学习目标",
+    "title": "学完本课，你能…",
+    "cards": [
+      {
+        "b": "gold",
+        "k": "说出",
+        "n": "秦末农民起义的<b>根本原因</b>",
+        "d": "秦的暴政：赋税、徭役、刑法"
+      },
+      {
+        "b": "green",
+        "k": "讲述",
+        "n": "陈胜吴广起义的<em>经过</em>",
+        "d": "大泽乡→张楚政权→各地响应"
+      },
+      {
+        "b": "ox",
+        "k": "评价",
+        "n": "起义的<span class=\"ox\">历史意义</span>",
+        "d": "第一次大规模农民起义"
+      }
+    ],
+    "concl": "一句话：<b>官逼民反</b>——秦的暴政点燃了第一次农民大起义",
+    "foot": "",
+    "_选型": {
+      "意图": "特征",
+      "候选": [
+        "photo_props",
+        "cards3",
+        "problem_pain",
+        "solution_features",
+        "problem_snapshot"
+      ],
+      "选中": "cards3",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    }
+  },
+  {
+    "id": "P3",
+    "tpl": "section",
+    "brow": "初中历史",
+    "no": "03",
+    "ghost": "01",
+    "eb": "PART ONE",
+    "title": "秦的暴政",
+    "sub": "天下苦秦久矣",
+    "foot": "",
+    "tone": "light",
+    "bg": "dots",
+    "_选型": {
+      "意图": "章节",
+      "候选": [
+        "section",
+        "section_image",
+        "section_split",
+        "section_minimal",
+        "section_accent",
+        "section_band",
+        "section_statement",
+        "section_progress",
+        "section_duo",
+        "section_reuse",
+        "section_icon",
+        "section_bridge"
+      ],
+      "选中": "section",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    }
+  },
+  {
+    "id": "P4",
+    "tpl": "photo_props",
+    "brow": "初中历史",
+    "no": "04",
+    "kick": "核心概念",
+    "title": "为什么爆发<b>农民起义</b>",
+    "tag": "一页一概念",
+    "cap": "秦长城——繁重徭役的见证",
+    "rows": [
+      {
+        "b": "ox",
+        "k": "赋税沉重",
+        "n": "田租、口赋、盐铁之利<em>二十倍于古</em>",
+        "d": "农民大半收获被夺走"
+      },
+      {
+        "b": "ox",
+        "k": "徭役繁重",
+        "n": "修长城、建宫殿、戍边，<em>竭民力</em>",
+        "d": "壮丁不足，妇女也上工地"
+      },
+      {
+        "b": "ox",
+        "k": "刑法严酷",
+        "n": "族诛连坐，<em>动辄重刑</em>",
+        "d": "陈胜吴广：误期当斩"
+      }
+    ],
+    "concl": "结论：<b>秦的暴政</b>是起义爆发的根本原因",
+    "foot": "",
+    "bg": "dots",
+    "mask": "rounded",
+    "_选型": {
+      "意图": "特征",
+      "候选": [
+        "photo_props",
+        "cards3",
+        "problem_pain",
+        "solution_features",
+        "problem_snapshot"
+      ],
+      "选中": "photo_props",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    },
+    "img": "P4-img.png"
+  },
+  {
+    "id": "P5",
+    "tpl": "stepper",
+    "brow": "初中历史",
+    "no": "05",
+    "kick": "起义经过",
+    "title": "陈胜吴广起义",
+    "steps": [
+      {
+        "t": "大泽乡起义",
+        "d": "前209年，陈胜、吴广率900戍卒在大泽乡揭竿而起"
+      },
+      {
+        "t": "建立张楚政权",
+        "d": "攻下大泽乡、蕲县，陈胜称王，国号「张楚」"
+      },
+      {
+        "t": "各地纷纷响应",
+        "d": "项羽、刘邦等起兵反秦，秦朝统治土崩瓦解"
+      },
+      {
+        "t": "起义的结局",
+        "d": "陈胜、吴广相继牺牲，但反秦烈火最终推翻秦朝"
+      }
+    ],
+    "warn": "记住两个关键：<b>前209年</b>，<b>大泽乡</b>",
+    "foot": "",
+    "bg": "dots",
+    "_选型": {
+      "意图": "方法",
+      "候选": [
+        "photo_chain",
+        "stepper",
+        "photo_props",
+        "solution_pillars",
+        "solution_how"
+      ],
+      "选中": "stepper",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    }
+  },
+  {
+    "id": "P6",
+    "tpl": "chart",
+    "brow": "初中历史",
+    "no": "06",
+    "kick": "数据",
+    "title": "巨鹿之战：5万对40万",
+    "cap": "公元前207年，巨鹿之战",
+    "insight": {
+      "take": "以少胜多：项羽破釜沉舟，大败秦军主力",
+      "bullets": [
+        "项羽率 5 万楚军北上救赵",
+        "秦军 40 万围攻巨鹿",
+        "破釜沉舟，九战九捷，秦主力被歼"
+      ]
+    },
+    "foot": "",
+    "bg": "dots",
+    "mask": "rounded",
+    "_选型": {
+      "意图": "数据对比",
+      "候选": [
+        "chart",
+        "table_compare",
+        "chart_table",
+        "chart_dualpanel",
+        "chart_rail"
+      ],
+      "选中": "chart",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    },
+    "img": "P6-chart.png"
+  },
+  {
+    "id": "P7",
+    "tpl": "section",
+    "brow": "初中历史",
+    "no": "07",
+    "ghost": "02",
+    "eb": "PART TWO",
+    "title": "巩固练习",
+    "sub": "以史为鉴，辨一辨",
+    "foot": "",
+    "tone": "light",
+    "bg": "dots",
+    "_选型": {
+      "意图": "章节",
+      "候选": [
+        "section",
+        "section_image",
+        "section_split",
+        "section_minimal",
+        "section_accent",
+        "section_band",
+        "section_statement",
+        "section_progress",
+        "section_duo",
+        "section_reuse",
+        "section_icon",
+        "section_bridge"
+      ],
+      "选中": "section",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    }
+  },
+  {
+    "id": "P8",
+    "tpl": "cards3",
+    "brow": "初中历史",
+    "no": "08",
+    "kick": "巩固练习",
+    "title": "练一练",
+    "cards": [
+      {
+        "b": "gold",
+        "k": "判断",
+        "n": "秦末农民起义爆发的根本原因是什么？",
+        "d": "提示：从秦朝的统治政策想"
+      },
+      {
+        "b": "green",
+        "k": "排序",
+        "n": "把起义经过排序：称王、揭竿、响应、牺牲",
+        "d": "提示：先想地点大泽乡"
+      },
+      {
+        "b": "ox",
+        "k": "辨析",
+        "n": "「陈胜吴广起义失败了，所以没有意义」对吗？",
+        "d": "提示：想想它沉重打击了谁"
+      }
+    ],
+    "concl": "对照笔记自查：<b>前209年，大泽乡，官逼民反</b>",
+    "foot": "",
+    "_选型": {
+      "意图": "特征",
+      "候选": [
+        "photo_props",
+        "cards3",
+        "problem_pain",
+        "solution_features",
+        "problem_snapshot"
+      ],
+      "选中": "cards3",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    }
+  },
+  {
+    "id": "P9",
+    "tpl": "kpi_hero",
+    "brow": "初中历史",
+    "no": "09",
+    "kick": "本课小结",
+    "title": "秦的暴政，点燃了第一次农民大起义",
+    "kpis": [
+      {
+        "v": "1",
+        "label": "原因",
+        "ctx": "秦的暴政：赋税、徭役、刑法",
+        "hero": true
+      },
+      {
+        "v": "2",
+        "label": "经过",
+        "ctx": "大泽乡起义→张楚政权→各地响应"
+      },
+      {
+        "v": "3",
+        "label": "意义",
+        "ctx": "中国历史上第一次大规模农民起义"
+      }
+    ],
+    "concl": "下节预告：<b>西汉的建立和文景之治</b>",
+    "foot": "",
+    "_选型": {
+      "意图": "关键指标",
+      "候选": [
+        "kpi_hero",
+        "chart_dashboard"
+      ],
+      "选中": "kpi_hero",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    }
+  }
+]

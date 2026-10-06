@@ -1,0 +1,162 @@
+{
+  "_meta": {
+    "说明": "版式族：页型的归类层。每个页型恰属一族（MECE）。选型时先定族（这页要干什么）、再定页型（用哪种实现）。族内\"选型口诀\"写清何时用哪种实现。"
+  },
+  "族": {
+    "图文": {
+      "何时用": "图片是主体：产品、场景、人物，文字做注脚。",
+      "成员": [
+        "case_arc",
+        "case_psr",
+        "photo_chain",
+        "photo_props",
+        "problem_snapshot",
+        "testimonial",
+        "team_grid"
+      ],
+      "选型口诀": "讲性质特征→photo_props；讲因果链条→photo_chain；PSR案例→case_psr；转变弧→case_arc；证言→testimonial；现状快照→problem_snapshot；人物介绍→team_grid"
+    },
+    "对比": {
+      "何时用": "A vs B 的对照：两组数据的多维度比较，或精确值的并排对照。",
+      "成员": [
+        "compare_bars",
+        "compare_beforeafter",
+        "compare_proscons",
+        "compare_vs",
+        "matrix_2x2",
+        "scorecard_decision",
+        "table_compare"
+      ],
+      "选型口诀": "要直观→compare_bars（条形）；要精确值→table_compare（短表）；镜像VS双栏→compare_vs；前后对比→compare_beforeafter；优劣清单→compare_proscons；2×2矩阵→matrix_2x2；决策记分卡→scorecard_decision"
+    },
+    "封面": {
+      "何时用": "全书第一页：定调、立题。不承载论证，只回答\"这是什么\"。",
+      "成员": [
+        "cover",
+        "cover_anchor",
+        "cover_band",
+        "cover_block",
+        "cover_brand",
+        "cover_brush",
+        "cover_collage",
+        "cover_crop",
+        "cover_diagonal",
+        "cover_duo",
+        "cover_fusion",
+        "cover_lux",
+        "cover_magazine",
+        "cover_minimal",
+        "cover_split",
+        "cover_typo"
+      ],
+      "选型口诀": "有大图→image/collage/crop系；纯文字立题→typo/minimal；品牌调性→brand/lux；撞色→duo/diagonal/block"
+    },
+    "数据": {
+      "何时用": "用数据/数字做论据：标题必须是结论句（Action Title），每页只讲一个数据观点。",
+      "成员": [
+        "chart",
+        "chart_annotated",
+        "chart_bullet",
+        "chart_combo",
+        "chart_dashboard",
+        "chart_dualpanel",
+        "chart_dumbbell",
+        "chart_map",
+        "chart_multiples",
+        "chart_pareto",
+        "chart_rail",
+        "chart_ranked",
+        "chart_stacked",
+        "chart_table",
+        "chart_waterfall",
+        "kpi_hero",
+        "number_hero"
+      ],
+      "选型口诀": "只要一个核心数字→number_hero；2-4个数字+解读→kpi_hero；数字卡片+支撑图→chart_dashboard；单图讲结论→chart（需解读栏→chart_rail，需钉标注→chart_annotated）；多切片对比→chart_multiples；A到B的桥→chart_waterfall；总量+结构→chart_stacked，绝对+占比→chart_dualpanel，二八归因→chart_pareto；前后差距→chart_dumbbell；排名→chart_ranked；量价双轴→chart_combo；目标达成→chart_bullet；图+表→chart_table；地理→chart_map"
+    },
+    "流程": {
+      "何时用": "讲步骤、演进、循环：时间线、阶段、因果链条。",
+      "成员": [
+        "flow_branch",
+        "flow_chevron",
+        "flow_cycle",
+        "flow_swimlane",
+        "roadmap_swimlane",
+        "stepper",
+        "timeline",
+        "timeline_vertical",
+        "flow_vertical"
+      ],
+      "选型口诀": "时间演进→timeline；步骤→stepper；分支→flow_branch；闭环→flow_cycle；箭形管道→flow_chevron；泳道图→flow_swimlane；纵向时间线→timeline_vertical；泳道路线图→roadmap_swimlane；纵向步骤→flow_vertical"
+    },
+    "目录": {
+      "何时用": "交代结构：全书目录或本章目录，让观众知道现在在哪、接下来去哪。",
+      "成员": [
+        "toc_bignum",
+        "toc_curve",
+        "toc_grid",
+        "toc_icon",
+        "toc_image",
+        "toc_list",
+        "toc_magazine",
+        "toc_minimal",
+        "toc_roadmap",
+        "toc_split",
+        "toc_tabs",
+        "toc_tb"
+      ],
+      "选型口诀": "章节≤4→bignum/list；有图→image；讲演进→roadmap/curve；极简→minimal；杂志感→magazine"
+    },
+    "章节": {
+      "何时用": "章与章之间的换气口：只允许编号+标题+可选一句副标题，不许出现正文、图表。",
+      "成员": [
+        "section",
+        "section_accent",
+        "section_band",
+        "section_bridge",
+        "section_duo",
+        "section_icon",
+        "section_image",
+        "section_minimal",
+        "section_progress",
+        "section_reuse",
+        "section_split",
+        "section_statement",
+        "closing_appendix"
+      ],
+      "选型口诀": "标准→section；有图→image/band；强调→accent/duo；观点落锤→statement；承上启下→bridge；目录复用→reuse；转附录→closing_appendix"
+    },
+    "观点": {
+      "何时用": "把观点摆出来：一句话结论、公式、信息图，不依赖数据论证。",
+      "成员": [
+        "cards3",
+        "checklist_tasks",
+        "closing_qa",
+        "cta_next",
+        "cta_single",
+        "definition_dict",
+        "definition_terms",
+        "equation_hero",
+        "framework_hub",
+        "framework_sipoc",
+        "infographic",
+        "problem_pain",
+        "quote_card",
+        "quote_full",
+        "scorecard_status",
+        "scr_brief",
+        "solution_features",
+        "solution_how",
+        "solution_pillars",
+        "statement_assertion",
+        "statement_dotdash",
+        "statement_golden",
+        "closing_takeaway",
+        "closing_cta",
+        "org_chart",
+        "venn"
+      ],
+      "选型口诀": "三条并列→cards3；一个公式→equation_hero；图标+数字+说明→infographic；行动断言→statement_assertion；点线论据→statement_dotdash；金句独白→statement_golden；全幅引言→quote_full；卡片引用→quote_card；词典定义→definition_dict；术语卡→definition_terms；痛点阵列→problem_pain；方案支柱→solution_pillars；特性价值行→solution_features；原理解剖→solution_how；任务清单→checklist_tasks；状态记分卡→scorecard_status；单一行动→cta_single；下一步→cta_next；SCR一页纸→scr_brief；枢纽辐射→framework_hub；SIPOC→framework_sipoc；致谢问答→closing_qa；一句话收束→closing_takeaway；要拍板→closing_cta；组织架构→org_chart；交集→venn"
+    }
+  }
+}

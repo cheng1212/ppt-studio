@@ -187,6 +187,171 @@
         "tone"
       ]
     },
+    "section_accent": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "en",
+        "foot"
+      ],
+      "说明": "章节页（深色强调条式）：深底 + 品牌色竖条 + 大编号",
+      "选填": [
+        "sub",
+        "num"
+      ]
+    },
+    "section_band": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "en",
+        "foot",
+        "img"
+      ],
+      "说明": "章节页（图片横带式）：中部横向图片带 + 留白标题区",
+      "选填": [
+        "sub"
+      ]
+    },
+    "section_bridge": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "sub",
+        "en",
+        "foot"
+      ],
+      "说明": "章节页（引导过渡式）：大标题 + 一句承上启下引导语",
+      "选填": []
+    },
+    "section_duo": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "en",
+        "foot"
+      ],
+      "说明": "章节页（撞色块式）：大面积撞色分割",
+      "选填": [
+        "sub",
+        "num"
+      ]
+    },
+    "section_icon": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "en",
+        "foot",
+        "icon"
+      ],
+      "说明": "章节页（图标印章式）：中央大图标 + 编号 + 标题",
+      "选填": [
+        "sub"
+      ]
+    },
+    "section_image": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "en",
+        "foot",
+        "img"
+      ],
+      "说明": "章节页（全出血图片式）：整页高清主题图 + 遮罩压字",
+      "选填": [
+        "sub"
+      ]
+    },
+    "section_minimal": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "en",
+        "foot"
+      ],
+      "说明": "章节页（极简留白式）：巨型标题 + 大量留白",
+      "选填": [
+        "sub"
+      ]
+    },
+    "section_progress": {
+      "items必填": [
+        "no",
+        "zh"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "en",
+        "foot",
+        "current",
+        "items"
+      ],
+      "说明": "章节页（进度指示式）：x of n 进度 + 章节序列，当前章高亮",
+      "选填": []
+    },
+    "section_reuse": {
+      "items必填": [
+        "no",
+        "zh"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "en",
+        "foot",
+        "current",
+        "items"
+      ],
+      "说明": "章节页（目录复用高亮式）：重现目录并高亮当前章",
+      "选填": []
+    },
+    "section_split": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "sub",
+        "en",
+        "foot",
+        "img"
+      ],
+      "说明": "章节页（左右分栏式）：40–50% 图片侧 + 文字侧",
+      "选填": []
+    },
+    "section_statement": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "sub",
+        "en",
+        "foot"
+      ],
+      "说明": "章节页（金句落锤式）：一句话结论居中（≤18字）+ 一句解释（≤30字）",
+      "选填": []
+    },
     "toc_grid": {
       "cards必填": [
         "no",
@@ -209,25 +374,325 @@
       "说明": "目录（2×2 带图卡）",
       "选填": []
     },
+    "toc_bignum": {
+      "items必填": [
+        "no",
+        "zh",
+        "desc"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "title",
+        "sub",
+        "en",
+        "foot",
+        "items"
+      ],
+      "说明": "目录（大字数字式）",
+      "选填": []
+    },
+    "toc_curve": {
+      "items必填": [
+        "no",
+        "zh",
+        "desc"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "title",
+        "sub",
+        "en",
+        "foot",
+        "items"
+      ],
+      "说明": "目录（曲线路径式）",
+      "选填": []
+    },
+    "toc_icon": {
+      "items必填": [
+        "no",
+        "zh",
+        "desc",
+        "icon"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "title",
+        "sub",
+        "en",
+        "foot",
+        "items"
+      ],
+      "说明": "目录（图标式）",
+      "选填": []
+    },
+    "toc_image": {
+      "items必填": [
+        "no",
+        "zh"
+      ],
+      "items选填": [
+        "desc"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "title",
+        "sub",
+        "en",
+        "foot",
+        "img",
+        "items"
+      ],
+      "说明": "目录（图片驱动式）",
+      "选填": []
+    },
+    "toc_list": {
+      "items必填": [
+        "no",
+        "zh",
+        "desc"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "title",
+        "sub",
+        "en",
+        "foot",
+        "items"
+      ],
+      "说明": "目录（数字列表式）",
+      "选填": []
+    },
+    "toc_magazine": {
+      "items必填": [
+        "no",
+        "zh"
+      ],
+      "items选填": [
+        "desc"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "title",
+        "sub",
+        "en",
+        "foot",
+        "items"
+      ],
+      "说明": "目录（杂志索引式）",
+      "选填": []
+    },
+    "toc_minimal": {
+      "items必填": [
+        "zh"
+      ],
+      "items选填": [
+        "no"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "title",
+        "en",
+        "foot",
+        "items"
+      ],
+      "说明": "目录（极简文字式）",
+      "选填": [
+        "sub"
+      ]
+    },
+    "toc_roadmap": {
+      "items必填": [
+        "no",
+        "zh"
+      ],
+      "items选填": [
+        "desc"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "title",
+        "sub",
+        "en",
+        "foot",
+        "current",
+        "items"
+      ],
+      "说明": "目录（路线图/进度式）",
+      "选填": []
+    },
+    "toc_split": {
+      "items必填": [
+        "no",
+        "zh",
+        "desc"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "title",
+        "sub",
+        "en",
+        "foot",
+        "items"
+      ],
+      "说明": "目录（左右分栏式）",
+      "选填": []
+    },
+    "toc_tabs": {
+      "items必填": [
+        "no",
+        "zh"
+      ],
+      "items选填": [
+        "desc"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "title",
+        "sub",
+        "en",
+        "foot",
+        "items"
+      ],
+      "说明": "目录（横向条带式）",
+      "选填": []
+    },
+    "toc_tb": {
+      "items必填": [
+        "no",
+        "zh",
+        "desc"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "title",
+        "sub",
+        "en",
+        "foot",
+        "items"
+      ],
+      "说明": "目录（上下分割式）",
+      "选填": []
+    },
     "tpl闭集": [
-      "cover",
-      "toc_grid",
-      "section",
-      "photo_props",
-      "photo_chain",
-      "table_compare",
-      "flow_branch",
-      "flow_cycle",
-      "timeline",
       "cards3",
-      "stepper",
-      "equation_hero",
+      "case_arc",
+      "case_psr",
       "chart",
-      "kpi_hero",
-      "cover_split",
-      "infographic",
+      "chart_annotated",
+      "chart_bullet",
+      "chart_combo",
+      "chart_dashboard",
+      "chart_dualpanel",
+      "chart_dumbbell",
+      "chart_map",
+      "chart_multiples",
+      "chart_pareto",
+      "chart_rail",
+      "chart_ranked",
+      "chart_stacked",
+      "chart_table",
+      "chart_waterfall",
+      "checklist_tasks",
+      "closing_qa",
       "compare_bars",
-      "number_hero"
+      "compare_beforeafter",
+      "compare_proscons",
+      "compare_vs",
+      "cover",
+      "cover_anchor",
+      "cover_band",
+      "cover_block",
+      "cover_brand",
+      "cover_brush",
+      "cover_collage",
+      "cover_crop",
+      "cover_diagonal",
+      "cover_duo",
+      "cover_fusion",
+      "cover_lux",
+      "cover_magazine",
+      "cover_minimal",
+      "cover_split",
+      "cover_typo",
+      "cta_next",
+      "cta_single",
+      "definition_dict",
+      "definition_terms",
+      "equation_hero",
+      "flow_branch",
+      "flow_chevron",
+      "flow_cycle",
+      "flow_swimlane",
+      "framework_hub",
+      "framework_sipoc",
+      "infographic",
+      "kpi_hero",
+      "matrix_2x2",
+      "number_hero",
+      "photo_chain",
+      "photo_props",
+      "problem_pain",
+      "problem_snapshot",
+      "quote_card",
+      "quote_full",
+      "roadmap_swimlane",
+      "scorecard_decision",
+      "scorecard_status",
+      "scr_brief",
+      "section",
+      "section_accent",
+      "section_band",
+      "section_bridge",
+      "section_duo",
+      "section_icon",
+      "section_image",
+      "section_minimal",
+      "section_progress",
+      "section_reuse",
+      "section_split",
+      "section_statement",
+      "solution_features",
+      "solution_how",
+      "solution_pillars",
+      "statement_assertion",
+      "statement_dotdash",
+      "statement_golden",
+      "stepper",
+      "table_compare",
+      "testimonial",
+      "timeline",
+      "timeline_vertical",
+      "toc_bignum",
+      "toc_curve",
+      "toc_grid",
+      "toc_icon",
+      "toc_image",
+      "toc_list",
+      "toc_magazine",
+      "toc_minimal",
+      "toc_roadmap",
+      "toc_split",
+      "toc_tabs",
+      "toc_tb",
+      "closing_takeaway",
+      "closing_cta",
+      "closing_appendix",
+      "org_chart",
+      "venn",
+      "team_grid",
+      "flow_vertical"
     ],
     "说明": "pages.json 的条目规约（按 tpl 分）。tpl 为闭集，未知 tpl 即拒。校验器按此校验。",
     "通用必填": [
@@ -491,6 +956,1151 @@
         "bg"
       ],
       "说明": "大数字：一页一个数字做视觉 hammer（200px）。icon可选。"
+    },
+    "cover_typo": {
+      "必填": [
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "en",
+        "corner"
+      ],
+      "说明": "大字报式纯文字封面（Typographic Statement）。"
+    },
+    "cover_minimal": {
+      "必填": [
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "corner"
+      ],
+      "说明": "留白主导极简封面（Whitespace-Dominant Minimal）。"
+    },
+    "cover_block": {
+      "必填": [
+        "img",
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "en",
+        "corner",
+        "shape"
+      ],
+      "说明": "图片独立色块封面（Image-as-Independent-Block）。"
+    },
+    "cover_duo": {
+      "必填": [
+        "img",
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "en",
+        "corner"
+      ],
+      "说明": "双色拼接封面（Color-Blocked Diptych）。"
+    },
+    "cover_diagonal": {
+      "必填": [
+        "img",
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "en",
+        "corner"
+      ],
+      "说明": "斜切对角封面（Diagonal Split）。"
+    },
+    "cover_brand": {
+      "必填": [
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "en",
+        "corner"
+      ],
+      "说明": "品牌色底+图形封面（Solid Brand Color + Shapes）。"
+    },
+    "cover_magazine": {
+      "必填": [
+        "img",
+        "eyebrow",
+        "title",
+        "kickers",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "corner"
+      ],
+      "说明": "杂志编辑风封面（Magazine Editorial）。",
+      "kickers必填": [
+        "t"
+      ]
+    },
+    "cover_lux": {
+      "必填": [
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "en",
+        "corner"
+      ],
+      "说明": "暗黑奢华封面（Dark Luxury）。"
+    },
+    "cover_collage": {
+      "必填": [
+        "imgs",
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "corner"
+      ],
+      "说明": "多图拼贴封面（Multi-Image Collage）。",
+      "imgs必填": [
+        "src"
+      ]
+    },
+    "cover_crop": {
+      "必填": [
+        "img",
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "en",
+        "corner"
+      ],
+      "说明": "超大裁切封面（Oversized Cropped Image）。"
+    },
+    "cover_anchor": {
+      "必填": [
+        "num",
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "corner"
+      ],
+      "说明": "单锚点封面（Single Anchor）。"
+    },
+    "cover_fusion": {
+      "必填": [
+        "img",
+        "img2",
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "corner"
+      ],
+      "说明": "图字融合封面（Text-Image Fusion / Double Exposure）。"
+    },
+    "cover_band": {
+      "必填": [
+        "img",
+        "eyebrow",
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "en",
+        "corner"
+      ],
+      "说明": "半出血图片带封面（Half-Bleed Image Band）。"
+    },
+    "cover_brush": {
+      "必填": [
+        "title",
+        "sub",
+        "foot"
+      ],
+      "选填": [
+        "eyebrow",
+        "en",
+        "corner",
+        "seal"
+      ],
+      "说明": "笔刷书法封面（Brush Calligraphy）。"
+    },
+    "chart_annotated": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot"
+      ],
+      "说明": "图表页（标注型）：图表内数据锚定标注讲 so-what（目标线/delta括号/callout/CAGR箭头）",
+      "选填": []
+    },
+    "chart_bullet": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot"
+      ],
+      "说明": "图表页（实际 vs 目标）：多行子弹图，每行一KPI（实际条/目标线/三段区间）",
+      "选填": []
+    },
+    "chart_combo": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot"
+      ],
+      "说明": "图表页（组合双轴）：柱（绝对值，主轴零基线）+ 线（比率，次轴）；仅真实配对",
+      "选填": []
+    },
+    "chart_dashboard": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot",
+        "kpis"
+      ],
+      "说明": "图表页（仪表盘）：顶部 KPI 卡片 + 下方支撑图表",
+      "kpis必填": [
+        "名",
+        "值",
+        "变化"
+      ],
+      "选填": []
+    },
+    "chart_dualpanel": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img_abs",
+        "img_share",
+        "cap",
+        "foot"
+      ],
+      "说明": "图表页（构成双面板）：左绝对值柱状 + 右占比饼图，两图类别顺序/颜色一致",
+      "选填": []
+    },
+    "chart_dumbbell": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot"
+      ],
+      "说明": "图表页（哑铃/斜率对比）：每类一行两点一线，专讲变化与差距",
+      "选填": []
+    },
+    "chart_map": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "cap",
+        "foot",
+        "metric"
+      ],
+      "说明": "图表页（地图页）：分级设色地图。地理边界数据待接入，当前渲染为占位",
+      "选填": [
+        "note"
+      ]
+    },
+    "chart_multiples": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot"
+      ],
+      "说明": "图表页（小多图矩阵）：同一指标多个切片，共用纵轴，高亮1个",
+      "选填": []
+    },
+    "chart_pareto": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot"
+      ],
+      "说明": "图表页（帕累托）：降序柱 + 累计%线，80%参考线，找关键少数",
+      "选填": []
+    },
+    "chart_rail": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot",
+        "rail"
+      ],
+      "说明": "图表页（图表+洞察侧边栏）：左65%图表 + 右35%结论栏（标签/英雄数字/解读）",
+      "rail必填": [
+        "label",
+        "hero",
+        "body"
+      ],
+      "选填": []
+    },
+    "chart_ranked": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot"
+      ],
+      "说明": "图表页（排名条形榜）：横向条形严格排序，条上直接标值",
+      "选填": []
+    },
+    "chart_stacked": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot"
+      ],
+      "说明": "图表页（堆叠构成）：总量及内部结构；部分≤5，全正数",
+      "选填": []
+    },
+    "chart_table": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot",
+        "headers",
+        "rows"
+      ],
+      "说明": "图表页（图表+数据表）：上图下表，表≤5行×4列，表宽与图对齐",
+      "选填": []
+    },
+    "chart_waterfall": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "cap",
+        "foot"
+      ],
+      "说明": "图表页（瀑布/桥接）：总量从 A 走到 B 的驱动拆解；唯一可打破单强调色规则的版式",
+      "选填": []
+    },
+    "statement_assertion": {
+      "points必填": [
+        "t"
+      ],
+      "points选填": [
+        "d"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "sub",
+        "points",
+        "foot"
+      ],
+      "说明": "行动标题页：大字断言＋副标题（口径/范围/读法）＋2–4 分论点纵向列表；title 必须为完整结论句，不许话题式标题。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "statement_dotdash": {
+      "items必填": [
+        "b"
+      ],
+      "items选填": [
+        "ds"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "items",
+        "foot"
+      ],
+      "说明": "点线式：实心圆点＋分论点、短横＋论据缩进；单个 bullet 下 ds ≤ 4。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "statement_golden": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "phrase",
+        "foot"
+      ],
+      "说明": "金句独白：4–7 词核心主张居中或左下超大字，大量留白；一页只放这一句。",
+      "选填": [
+        "sub",
+        "bg"
+      ]
+    },
+    "quote_full": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "quote",
+        "author",
+        "foot"
+      ],
+      "说明": "全幅引言：巨大引号装饰＋引文大字居中＋细线分隔作者行；bgimg 全幅图时文字区加半透明框压住。",
+      "选填": [
+        "source",
+        "bgimg",
+        "bg"
+      ]
+    },
+    "quote_card": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "quote",
+        "by",
+        "src",
+        "foot"
+      ],
+      "说明": "卡片式引用：中央卡片（引号＋引文＋署名＋来源行）；point 为顶部关联论点小字；一页只放一条引用。",
+      "选填": [
+        "point",
+        "bg"
+      ]
+    },
+    "definition_dict": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "term",
+        "def",
+        "foot"
+      ],
+      "说明": "词典条目式：term 左上巨大加粗，规则线/冒号分隔，def 干净小字；一页只定义一个词。",
+      "选填": [
+        "en",
+        "note",
+        "bg"
+      ]
+    },
+    "definition_terms": {
+      "terms必填": [
+        "t",
+        "d"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "terms",
+        "foot"
+      ],
+      "说明": "术语卡片：横向 2–4 卡，术语加粗＋一句话定义；统一句式。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "problem_pain": {
+      "pains必填": [
+        "k",
+        "q"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "pains",
+        "foot"
+      ],
+      "说明": "痛点图标阵列：3–4 横向卡（icon 占位＋痛点论断加粗＋q 量化小字）；痛点必须定量，须与后页方案对应。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "solution_pillars": {
+      "pillars必填": [
+        "k",
+        "d"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "pillars",
+        "foot"
+      ],
+      "说明": "方案支柱总览：title 价值主张断言，2–4 横向 icon 卡；支柱名不许内部黑话，支柱间 MECE。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "solution_features": {
+      "feats必填": [
+        "f",
+        "v"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "feats",
+        "foot"
+      ],
+      "说明": "特性—价值行：纵向行列表（icon 占位＋特性名加粗＋业务价值 so what 小字），行间细分隔线。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "solution_how": {
+      "steps必填": [
+        "t",
+        "d"
+      ],
+      "steps选填": [
+        "hot"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "steps",
+        "foot"
+      ],
+      "说明": "原理解剖：输入→机制→输出横向 3 框箭头连接；hot 环节（被改变环节）强调色＋“改变点”标注。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "checklist_tasks": {
+      "tasks必填": [
+        "t",
+        "owner",
+        "due"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "tasks",
+        "foot"
+      ],
+      "说明": "任务清单：复选框＋事项＋责任人＋时间右对齐；无责任人/时间的伪清单禁入。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "scorecard_status": {
+      "items必填": [
+        "k",
+        "status"
+      ],
+      "items选填": [
+        "prog"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "items",
+        "foot"
+      ],
+      "说明": "状态记分卡：行列表（条目＋状态徽色块＋进度条）；legend 为阈值图例行。",
+      "选填": [
+        "legend",
+        "bg"
+      ]
+    },
+    "cta_single": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "action",
+        "who",
+        "when",
+        "foot"
+      ],
+      "说明": "单一行动：action 超大字居中，who/when/ask 三行小字；只给 ONE action；结尾页不引入新论点/数据。",
+      "选填": [
+        "ask",
+        "bg"
+      ]
+    },
+    "cta_next": {
+      "steps必填": [
+        "t",
+        "owner",
+        "due"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "steps",
+        "contact",
+        "foot"
+      ],
+      "说明": "下一步清单：编号清单 ≤3 条（动词开头）＋底部联系方式条。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "scr_brief": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "s",
+        "c",
+        "r",
+        "foot"
+      ],
+      "说明": "SCR 一页纸：S 背景/C 冲突/R 结论三段纵向，R 段强调；只写 Situation 不写 Complication 的无张力摘要禁入。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "framework_hub": {
+      "spokes必填": [
+        "t"
+      ],
+      "spokes选填": [
+        "d"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "hub",
+        "spokes",
+        "foot"
+      ],
+      "说明": "枢纽辐射：中心圆＋4–6 辐射节点环绕/阵列，连线。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "framework_sipoc": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "suppliers",
+        "inputs",
+        "process",
+        "outputs",
+        "customers",
+        "foot"
+      ],
+      "说明": "SIPOC：横向五列（供应商/输入/过程/输出/客户），列头＋条目纵向；各列字符串数组 2–6 项。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "closing_qa": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "thanks",
+        "contact",
+        "foot"
+      ],
+      "说明": "致谢＋问答：thanks 大字＋contact 醒目＋seeds 种子问题列表＋takeaway 金句条；Q&A 留屏供拍照。",
+      "选填": [
+        "seeds",
+        "takeaway",
+        "bg"
+      ]
+    },
+    "compare_vs": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "a_title",
+        "b_title",
+        "a_points",
+        "b_points",
+        "foot"
+      ],
+      "说明": "镜像双栏 VS：左右镜像两栏＋中央 VS＋竖分隔线，要点逐条平行对位；两侧条目必须对位回答同一问题，信息量对称；verdict 底部条。",
+      "选填": [
+        "verdict",
+        "bg"
+      ]
+    },
+    "compare_beforeafter": {
+      "before必填": [
+        "t",
+        "points"
+      ],
+      "after必填": [
+        "t",
+        "points"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "before",
+        "after",
+        "delta",
+        "foot"
+      ],
+      "说明": "前后对比：左右分屏（before 灰调弱化、after 品牌色），中央箭头/分隔线；delta 底部量化结论通栏。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "compare_proscons": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "topic",
+        "pros",
+        "cons",
+        "verdict",
+        "foot"
+      ],
+      "说明": "优劣清单：双栏 pros/cons（各 ≤6）＋verdict 底部推荐区（推荐＋一句话理由）；只罗列不给 verdict 的禁入。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "matrix_2x2": {
+      "quads必填": [
+        "n"
+      ],
+      "quads选填": [
+        "d",
+        "items"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "x_axis",
+        "y_axis",
+        "quads",
+        "foot"
+      ],
+      "说明": "2×2 矩阵：2×2 网格＋轴标签；象限名＋说明/默认动作＋落位条目；轴无标签/象限无命名的装饰九宫格禁入。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "scorecard_decision": {
+      "cands必填": [
+        "name",
+        "score"
+      ],
+      "cands选填": [
+        "note"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "cands",
+        "winner",
+        "foot"
+      ],
+      "说明": "决策记分卡：候选项行（名称＋评分条＋note）＋winner 高亮＋理由条。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "flow_chevron": {
+      "steps必填": [
+        "t"
+      ],
+      "steps选填": [
+        "d"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "steps",
+        "foot"
+      ],
+      "说明": "箭形管道：横向首尾咬合箭形段（3–5）；每段一色、标题白字；段内浅色描述只留关键词。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "flow_swimlane": {
+      "lanes必填": [
+        "role",
+        "steps"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "lanes",
+        "foot"
+      ],
+      "说明": "泳道图：横向泳道，步骤盒按泳道落位，交接处跨道箭头；活动不许悬浮在泳道之外、归属不明。",
+      "选填": [
+        "note",
+        "bg"
+      ]
+    },
+    "timeline_vertical": {
+      "nodes必填": [
+        "t",
+        "h"
+      ],
+      "nodes选填": [
+        "d"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "nodes",
+        "foot"
+      ],
+      "说明": "纵向时间线：左侧细 rail＋dot；日期小字弱化＋标题加粗＋说明；纵向堆叠 4–8 节点。",
+      "选填": [
+        "bg"
+      ]
+    },
+    "roadmap_swimlane": {
+      "lanes必填": [
+        "name",
+        "bars"
+      ],
+      "bars必填": [
+        "t",
+        "q0",
+        "q1"
+      ],
+      "bars选填": [
+        "confirmed"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "quarters",
+        "lanes",
+        "foot"
+      ],
+      "说明": "泳道式路线图：列＝季度、行＝lane；任务圆角条按 q0–q1 跨列；NOW 竖线；proposed 用虚线/浅色；backlog 不许全画上。",
+      "选填": [
+        "now",
+        "milestones",
+        "bg"
+      ]
+    },
+    "case_psr": {
+      "results必填": [
+        "k",
+        "before",
+        "after"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "problem",
+        "solution",
+        "results",
+        "foot"
+      ],
+      "说明": "PSR 三段面板：上方主图；Problem 灰调→Solution 品牌色→Results before→after 大字；Results 必须量化（before/after＋时间框），Challenge 与 Results 指标口径一致；顶部可选快照盒（Company/Industry/Challenge/Result/Product 五行速览）。",
+      "选填": [
+        "cap",
+        "mask",
+        "timebox",
+        "quote",
+        "bg"
+      ]
+    },
+    "case_arc": {
+      "stages必填": [
+        "k",
+        "d"
+      ],
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "stages",
+        "foot"
+      ],
+      "说明": "转变弧：横向弧线/阶梯（旧世界→转折点→方法→新世界→下一步），转折点高亮；Turning Point 不可缺（不许 Before 直跳 After）。",
+      "选填": [
+        "img",
+        "cap",
+        "mask",
+        "bg"
+      ]
+    },
+    "testimonial": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "quote",
+        "name",
+        "photo",
+        "result",
+        "foot"
+      ],
+      "说明": "证言式：左肖像（圆形/圆角）＋右大引号引文＋署名＋结果数字；一次只放一条证言；匿名证言（“某头部客户”）禁入。",
+      "选填": [
+        "cap",
+        "mask",
+        "bg"
+      ]
+    },
+    "problem_snapshot": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "img",
+        "pains",
+        "foot"
+      ],
+      "说明": "现状快照分屏：左右分屏，img 灰调处理＋右 pains 纵向列表；情绪必须与内容一致（问题页不许“正能量”配色）。",
+      "选填": [
+        "cap",
+        "mask",
+        "bg"
+      ]
+    },
+    "closing_takeaway": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "takeaway",
+        "foot"
+      ],
+      "选填": [
+        "thanks",
+        "contact",
+        "bg"
+      ],
+      "说明": "回顾锚点：一句话核心信息收束；thanks 只许小字"
+    },
+    "closing_cta": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "decision",
+        "points",
+        "ask",
+        "foot"
+      ],
+      "选填": [
+        "bliss",
+        "bg"
+      ],
+      "说明": "行动收尾·决策型：McKinsey 四组件 decision/3点摘要/ask/yes后果"
+    },
+    "closing_appendix": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "items",
+        "foot"
+      ],
+      "选填": [
+        "note",
+        "bg"
+      ],
+      "items必填": [
+        "t"
+      ],
+      "items选填": [
+        "d"
+      ],
+      "说明": "转附录：正文→附录过渡，列附录条目备查"
+    },
+    "org_chart": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "tiers",
+        "foot"
+      ],
+      "选填": [
+        "bg"
+      ],
+      "说明": "组织架构树：2-4 层级，根在上，层间连线"
+    },
+    "venn": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "sets",
+        "zones",
+        "foot"
+      ],
+      "选填": [
+        "bg"
+      ],
+      "sets必填": [
+        "label"
+      ],
+      "zones必填": [
+        "label"
+      ],
+      "zones选填": [
+        "d"
+      ],
+      "说明": "交集图：2-3 圆，交集区必须标注"
+    },
+    "team_grid": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "members",
+        "foot"
+      ],
+      "选填": [
+        "bg",
+        "mask"
+      ],
+      "members必填": [
+        "photo",
+        "name",
+        "role"
+      ],
+      "members选填": [
+        "bio"
+      ],
+      "说明": "人物介绍：2-4 人横向人物卡"
+    },
+    "flow_vertical": {
+      "必填": [
+        "brow",
+        "no",
+        "kick",
+        "title",
+        "steps",
+        "foot"
+      ],
+      "选填": [
+        "bg"
+      ],
+      "steps必填": [
+        "t",
+        "d"
+      ],
+      "说明": "纵向步骤：rail＋编号节点，每步可展开说明"
     }
   },
   "全局选填": {

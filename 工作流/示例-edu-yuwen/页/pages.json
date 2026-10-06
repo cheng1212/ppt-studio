@@ -1,0 +1,110 @@
+[
+  {
+    "id": "P1",
+    "tpl": "cover",
+    "eyebrow": "CHINESE · POETRY",
+    "title": "静夜思",
+    "en": "Quiet Night Thoughts",
+    "sub": "李白 · 唐",
+    "foot": "小学语文 · 三年级",
+    "corner": "课件",
+    "_选型": {
+      "意图": "封面",
+      "候选": [
+        "cover",
+        "cover_split",
+        "cover_typo",
+        "cover_minimal",
+        "cover_block",
+        "cover_duo",
+        "cover_diagonal",
+        "cover_brand",
+        "cover_magazine",
+        "cover_lux",
+        "cover_collage",
+        "cover_crop",
+        "cover_anchor",
+        "cover_fusion",
+        "cover_band",
+        "cover_brush"
+      ],
+      "选中": "cover",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    },
+    "bg": "P1-bg.png"
+  },
+  {
+    "id": "P2",
+    "tpl": "cards3",
+    "brow": "小学语文",
+    "no": "02",
+    "kick": "诗句赏析",
+    "title": "一句一画面",
+    "cards": [
+      {
+        "b": "gold",
+        "k": "举头",
+        "n": "<b>举头</b>望明月",
+        "d": "动作：抬头——思乡的起点"
+      },
+      {
+        "b": "green",
+        "k": "低头",
+        "n": "<b>低头</b>思故乡",
+        "d": "动作：低头——思乡的落点"
+      },
+      {
+        "b": "ox",
+        "k": "想象",
+        "n": "疑是<span class=\"ox\">地上霜</span>",
+        "d": "比喻：月光像秋霜一样白"
+      }
+    ],
+    "concl": "读一读，背一背：<b>举头望明月，低头思故乡</b>",
+    "foot": "",
+    "_选型": {
+      "意图": "特征",
+      "候选": [
+        "photo_props",
+        "cards3",
+        "problem_pain",
+        "solution_features",
+        "problem_snapshot"
+      ],
+      "选中": "cards3",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    }
+  },
+  {
+    "id": "P3",
+    "tpl": "section",
+    "brow": "小学语文",
+    "no": "03",
+    "ghost": "01",
+    "eb": "PART ONE",
+    "title": "读诗学诗",
+    "sub": "先读准，再读美",
+    "foot": "",
+    "tone": "light",
+    "bg": "dots",
+    "_选型": {
+      "意图": "章节",
+      "候选": [
+        "section",
+        "section_image",
+        "section_split",
+        "section_minimal",
+        "section_accent",
+        "section_band",
+        "section_statement",
+        "section_progress",
+        "section_duo",
+        "section_reuse",
+        "section_icon",
+        "section_bridge"
+      ],
+      "选中": "section",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    }
+  }
+]

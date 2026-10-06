@@ -1,0 +1,100 @@
+[
+  {
+    "id": "P1",
+    "tpl": "cover",
+    "eyebrow": "MATH · FUNCTION",
+    "title": "一次函数",
+    "en": "Linear Function",
+    "sub": "y = kx + b，一条直线的故事",
+    "foot": "初中数学 · 八年级",
+    "corner": "课件",
+    "_选型": {
+      "意图": "封面",
+      "候选": [
+        "cover",
+        "cover_split",
+        "cover_typo",
+        "cover_minimal",
+        "cover_block",
+        "cover_duo",
+        "cover_diagonal",
+        "cover_brand",
+        "cover_magazine",
+        "cover_lux",
+        "cover_collage",
+        "cover_crop",
+        "cover_anchor",
+        "cover_fusion",
+        "cover_band",
+        "cover_brush"
+      ],
+      "选中": "cover",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    },
+    "bg": "P1-bg.png"
+  },
+  {
+    "id": "P2",
+    "tpl": "chart",
+    "brow": "初中数学",
+    "no": "02",
+    "kick": "函数图像",
+    "title": "k 决定方向，b 决定位置",
+    "cap": "k=1>0，y 随 x 增大而增大",
+    "insight": {
+      "take": "k>0 时直线上升，y 随 x 增大而增大",
+      "bullets": [
+        "k=1：每向右 1 格，向上 1 格",
+        "b=1：直线交 y 轴于 (0,1)"
+      ]
+    },
+    "foot": "",
+    "bg": "dots",
+    "mask": "rounded",
+    "_选型": {
+      "意图": "数据对比",
+      "候选": [
+        "chart",
+        "table_compare",
+        "chart_table",
+        "chart_dualpanel",
+        "chart_rail"
+      ],
+      "选中": "chart",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    },
+    "img": "P2-chart.png"
+  },
+  {
+    "id": "P3",
+    "tpl": "section",
+    "brow": "初中数学",
+    "no": "03",
+    "ghost": "01",
+    "eb": "PART ONE",
+    "title": "认识一次函数",
+    "sub": "从解析式到图像",
+    "foot": "",
+    "tone": "light",
+    "bg": "dots",
+    "_选型": {
+      "意图": "章节",
+      "候选": [
+        "section",
+        "section_image",
+        "section_split",
+        "section_minimal",
+        "section_accent",
+        "section_band",
+        "section_statement",
+        "section_progress",
+        "section_duo",
+        "section_reuse",
+        "section_icon",
+        "section_bridge"
+      ],
+      "选中": "section",
+      "理由": "内容生成自动选型（大纲模板 tpl 建议首选在候选内者）"
+    }
+  }
+]

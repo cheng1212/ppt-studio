@@ -1,0 +1,28 @@
+{
+  "brow": "氧化还原反应",
+  "no": "08 / 09",
+  "kick": "课堂练习",
+  "title": "练一练：你能答对吗",
+  "cards": [
+    {
+      "b": "green",
+      "k": "第 1 题",
+      "n": "下列反应中，属于氧化还原反应的是（ ）",
+      "d": "A. CaCO<sub>3</sub> → CaO + CO<sub>2</sub>↑　B. Zn + H<sub>2</sub>SO<sub>4</sub> = ZnSO<sub>4</sub> + H<sub>2</sub>↑　C. NaOH + HCl = NaCl + H<sub>2</sub>O　提示：看化合价变不变"
+    },
+    {
+      "b": "gold",
+      "k": "第 2 题",
+      "n": "反应 CuO + H<sub>2</sub> → Cu + H<sub>2</sub>O 中，氧化剂是____",
+      "d": "提示：得电子、化合价降低的物质"
+    },
+    {
+      "b": "ox",
+      "k": "第 3 题",
+      "n": "用双线桥标出 2Na + Cl<sub>2</sub> → 2NaCl 的电子转移",
+      "d": "提示：Na：0→+1 失电子；Cl：0→−1 得电子"
+    }
+  ],
+  "concl": "先想一想：<b>化合价变了没</b>",
+  "foot": "化学组"
+}
