@@ -24,6 +24,8 @@
 | cap | 选填 | 图注：数据来源 + 时间范围 |
 | insight | 选填 | 右侧解读：{take（一句话结论）, bullets（2-3条）} |
 | foot | 是 | 底部右注 |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
+| mask | 否 | 图片蒙版：circle/rounded/blob/arch（闭集，仅有图页型） |
 
 ## 纪律
 

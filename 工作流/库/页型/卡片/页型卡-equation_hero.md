@@ -24,8 +24,13 @@
 | cards | 是 | 数组，固定 3 项；每项：b（左边色：闭集 ink/green/gold/ox）/ k（标签词）/ n（要点，可用 `<em>` 标绿）/ d（说明） |
 | concl | 是 | 结论条（沉底通栏，可用 `<b>` 标金） |
 | foot | 是 | 底部右注 |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
 
 ## 纪律
 
 - cards 必须为 3 项（校验闸拦截）。
 - eq 是本页视觉中心，字号 104px，不要写长串文字。
+
+## 模板对应
+
+程序/页面生成.py `t_equation_hero`；PPTX 声明式映射见 程序/pptx映射.py `映射表["equation_hero"]`

@@ -23,6 +23,7 @@
 | edges | 是 | 数组；每项 {from（起点节点名）, to（终点节点名）, label（箭头标注：反应条件）}；from/to 必须在 nodes 中 |
 | concl | 是 | 金边结论条（可用 `<b>` 标绿） |
 | foot | 是 | 底部右注 |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
 
 ## 纪律
 

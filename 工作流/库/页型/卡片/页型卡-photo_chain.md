@@ -24,6 +24,8 @@
 | steps | 是 | 数组；每项：t（步骤标题）/ d（说明）。步骤间自动加因果箭头 |
 | warn | 是 | 底部提示框（可用 `<b>` 标绿） |
 | foot | 是 | 底部右注 |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
+| mask | 否 | 图片蒙版：circle/rounded/blob/arch（闭集，仅有图页型） |
 
 
 > 无图说明：img/tag/cap 为选填。无图时模板走纯文字分支，且须经 `--无图 "理由"` 显式放行（配图偏好软闸，见 _步.json P1）。

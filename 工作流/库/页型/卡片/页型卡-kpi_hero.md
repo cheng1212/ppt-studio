@@ -23,6 +23,7 @@
 | kpis | 是 | 数组 1-4 个：{v（数字）, label（指标名）, ctx（上下文如"▲32% YoY"）, hero（bool，主角）} |
 | concl | 选填 | 金边结论条 |
 | foot | 是 | 底部右注 |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
 
 ## 纪律
 

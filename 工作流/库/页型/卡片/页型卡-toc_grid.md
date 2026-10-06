@@ -25,6 +25,7 @@
 | foot | 是 | 底部左注 |
 | cards | 是 | 数组，4 项；每项：no（编号/英文）/ zh（中文名）/ desc（描述）/ img（素材文件名） |
 | cards[].contain | 否 | true 时图 contain 显示（实物特写防裁切） |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
 
 ## 纪律
 

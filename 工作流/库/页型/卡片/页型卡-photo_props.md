@@ -25,6 +25,8 @@
 | rows | 是 | 数组；每项：b（色块色：闭集 ink/green/gold/ox，ox=氧化橙语义色）/ k（标签词）/ n（要点，可用 `<em>` 标绿）/ d（说明） |
 | concl | 是 | 金边结论条（可用 `<b>` 标绿） |
 | foot | 是 | 底部右注 |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
+| mask | 否 | 图片蒙版：circle/rounded/blob/arch（闭集，仅有图页型） |
 
 
 > 无图说明：img/tag/cap 为选填。无图时模板走纯文字分支，且须经 `--无图 "理由"` 显式放行（配图偏好软闸，见 _步.json P1）。

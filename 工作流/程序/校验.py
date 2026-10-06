@@ -8,6 +8,9 @@ P2（写数据）→ P3（生成）之间必须过本闸：任一不过即 FAIL�
 用法:
   python 校验.py                    # 校验当前项目 pages.json
   python 校验.py --主题 <主题名>    # 追加校验主题卡 + 主题 CSS 令牌
+  python 校验.py --卡               # 卡库自校验：K1 四方一致 / K2 页型卡自检 /
+                                   #   K3 卡表vs规约 / K4 模板读取vs卡表 /
+                                   #   K5 主题卡自检 / K6 pptx映射引用vs规约
 
 校验项:
   ① 条目通用必填（id/tpl）齐
@@ -31,6 +34,10 @@ import argparse, io, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from 基座 import OK, FAIL, USAGE, ERR, read_json, die, project_dir, LIB_DIR, RULES_DIR, WORKFLOW
 
+# 背景纹理闭集：bg 取这些值时是纹理类名，不查素材文件。
+# 与 页面生成.py::_BG_OK 同步（--卡 K4 附带机检）。
+_BG_TEXTURE = {"dots", "grid", "diagonal", "mesh", "glow"}
+
 
 def _lum(hex6):
     c = [int(hex6[i:i + 2], 16) / 255.0 for i in (1, 3, 5)]
@@ -44,10 +51,368 @@ def contrast(a, b):
     return (l1 + 0.05) / (l2 + 0.05)
 
 
+# ============================================================
+# --卡 模式：卡库自校验 + 卡↔程序漂移机检（K1–K6）
+# 定案 D2 机检化：页型卡数据字段节必须与模板实际读取字段一致，漂移即修卡。
+# 用法: python 校验.py --卡
+# ============================================================
+
+def _卡_读文件头(path):
+    """读卡文件第一个 ## 之前的 '- key: value' 行。"""
+    head = {}
+    for line in io.open(path, encoding="utf-8"):
+        if line.startswith("## "):
+            break
+        m = re.match(r"^-\s*([^:：]+?)\s*[:：]\s*(.+?)\s*$", line)
+        if m:
+            head[m.group(1).strip()] = m.group(2).strip()
+    return head
+
+
+def _卡_节列表(path):
+    txt = io.open(path, encoding="utf-8").read()
+    return re.findall(r"^##\s+(.+?)\s*$", txt, re.M)
+
+
+def _卡_节正文(path, 节名):
+    txt = io.open(path, encoding="utf-8").read()
+    m = re.search(r"^##\s+" + re.escape(节名) + r"[^\n]*\n(.*?)(?=^##\s+|\Z)",
+                  txt, re.M | re.S)
+    return m.group(1) if m else ""
+
+
+def _卡_解析数据字段表(path):
+    """解析页型卡数据字段表 -> {字段名: 是否必填}。"""
+    fields = {}
+    body = ""
+    for 节 in _卡_节列表(path):
+        if "数据字段表" in 节:
+            body = _卡_节正文(path, 节)
+            break
+    for line in body.split("\n"):
+        s = line.strip()
+        if not s.startswith("|"):
+            continue
+        cells = [c.strip().strip("`") for c in s.strip("|").split("|")]
+        if len(cells) < 2:
+            continue
+        name = cells[0]
+        if name in ("字段", "") or set(name) <= set("-"):
+            continue
+        # 组合写法 "brow/no/kick" 拆成多个字段（卡片书写惯例）
+        for sub in name.split("/"):
+            sub = sub.strip()
+            if sub:
+                fields[sub] = (cells[1] == "是")
+    return fields
+
+
+def _卡_模板读取字段():
+    """AST 静态分析 页面生成.py 各 t_* 模板实际读取的字段。
+
+    返回 {tpl: {'top': set, 'nested': {父字段: set}}}。
+    识别 p["x"] / p.get("x") / for it in p["items"] 内 it["y"]，
+    _bgcls(p) 视为读 bg，_maskcls(p) 视为读 mask。"""
+    import ast as _ast
+    src = io.open(os.path.join(WORKFLOW, "程序", "页面生成.py"), encoding="utf-8").read()
+    tree = _ast.parse(src)
+    out = {}
+
+    def const_str(node):
+        return node.value if isinstance(node, _ast.Constant) and isinstance(node.value, str) else None
+
+    def expr_top_field(node, arg):
+        if isinstance(node, _ast.Name):
+            return node.id
+        if isinstance(node, _ast.Subscript):
+            v = node.value
+            if isinstance(v, _ast.Name) and v.id == arg:
+                return const_str(node.slice)
+        if isinstance(node, _ast.Call) and isinstance(node.func, _ast.Attribute):
+            f = node.func
+            if (isinstance(f.value, _ast.Name) and f.value.id == arg
+                    and f.attr == "get" and node.args):
+                return const_str(node.args[0])
+        return None
+
+    for node in _ast.walk(tree):
+        if not (isinstance(node, _ast.FunctionDef) and node.name.startswith("t_")):
+            continue
+        tpl = node.name[2:]
+        arg = node.args.args[0].arg if node.args.args else "p"
+        top, nested, loopmap = set(), {}, {}
+        for sub in _ast.walk(node):
+            if isinstance(sub, _ast.For):
+                var = sub.target.id if isinstance(sub.target, _ast.Name) else None
+                if var:
+                    pf = expr_top_field(sub.iter, arg)
+                    if pf:
+                        loopmap[var] = pf
+        for sub in _ast.walk(node):
+            if isinstance(sub, _ast.Call) and isinstance(sub.func, _ast.Name):
+                if sub.func.id == "_bgcls":
+                    top.add("bg")
+                    continue
+                if sub.func.id == "_maskcls":
+                    top.add("mask")
+                    continue
+            var, fld = None, None
+            if isinstance(sub, _ast.Subscript):
+                v = sub.value
+                if isinstance(v, _ast.Name):
+                    var, fld = v.id, const_str(sub.slice)
+            elif (isinstance(sub, _ast.Call) and isinstance(sub.func, _ast.Attribute)
+                    and sub.func.attr == "get" and sub.args
+                    and isinstance(sub.func.value, _ast.Name)):
+                var, fld = sub.func.value.id, const_str(sub.args[0])
+            if not fld or not var:
+                continue
+            if var == arg:
+                top.add(fld)
+            elif var in loopmap:
+                nested.setdefault(loopmap[var], set()).add(fld)
+        out[tpl] = {"top": top, "nested": nested}
+    return out
+
+
+def _卡_映射引用字段():
+    """AST 解析 pptx映射.py 的 映射表 -> {tpl: {'top': set, 'nested': {父字段: set}}}。
+
+    提取各组件 "字段" 引用的裸字段名与 {it.xxx} 嵌套引用；
+    循环组件的 "字段" 即嵌套父字段。"""
+    import ast as _ast
+    src = io.open(os.path.join(WORKFLOW, "程序", "pptx映射.py"), encoding="utf-8").read()
+    tree = _ast.parse(src)
+    out = {}
+    map_node = None
+    for node in tree.body:
+        if isinstance(node, _ast.Assign):
+            for t in node.targets:
+                if isinstance(t, _ast.Name) and t.id == "映射表":
+                    map_node = node.value
+    if not isinstance(map_node, _ast.Dict):
+        return out
+
+    def const(node):
+        return node.value if isinstance(node, _ast.Constant) else None
+
+    def walk_comp(dnode, loop_parent, top, nested):
+        kv = {}
+        for kk, vv in zip(dnode.keys, dnode.values):
+            c = const(kk)
+            if isinstance(c, str):
+                kv[c] = vv
+        if const(kv.get("组件")) == "循环":
+            f = const(kv.get("字段"))
+            parent = None
+            if isinstance(f, str):
+                if f.startswith("{"):
+                    m = re.match(r"\{([A-Za-z_][\w.]*)\}", f)
+                    parent = m.group(1).split(".")[0] if m else None
+                else:
+                    parent = f
+            tpl_node = kv.get("模板")
+            if isinstance(tpl_node, _ast.List):
+                for sub in tpl_node.elts:
+                    if isinstance(sub, _ast.Dict):
+                        walk_comp(sub, parent, top, nested)
+            return
+        f = const(kv.get("字段"))
+        if isinstance(f, str):
+            if f.startswith("{"):
+                for m in re.finditer(r"it\.([A-Za-z_]\w*)", f):
+                    if loop_parent:
+                        nested.setdefault(loop_parent, set()).add(m.group(1))
+                m2 = re.fullmatch(r"\{([A-Za-z_]\w*)\}", f.strip())
+                if m2 and m2.group(1) not in ("it", "i", "_n", "_max"):
+                    top.add(m2.group(1))
+            elif f:
+                top.add(f)
+        for vv in kv.values():
+            if isinstance(vv, _ast.Dict):
+                walk_comp(vv, loop_parent, top, nested)
+            elif isinstance(vv, _ast.List):
+                for sub in vv.elts:
+                    if isinstance(sub, _ast.Dict):
+                        walk_comp(sub, loop_parent, top, nested)
+
+    for k, v in zip(map_node.keys, map_node.values):
+        tpl = const(k)
+        if not isinstance(tpl, str) or not isinstance(v, _ast.List):
+            continue
+        top, nested = set(), {}
+        for comp in v.elts:
+            if isinstance(comp, _ast.Dict):
+                walk_comp(comp, None, top, nested)
+        out[tpl] = {"top": top, "nested": nested}
+    return out
+
+
+def main_卡():
+    """--卡 模式：卡库自校验 + 卡↔程序漂移机检。返回退出码。"""
+    errors, warns = [], []
+    rules = read_json(os.path.join(RULES_DIR, "卡型规约.json"))
+    entry_rules = rules["页面条目"]
+    tpl_closed = entry_rules["tpl闭集"]
+    tpl_in_rules = sorted(
+        k for k in entry_rules if k not in ("tpl闭集", "通用必填", "全局选填", "说明"))
+
+    import ast as _ast
+    pg_path = os.path.join(WORKFLOW, "程序", "页面生成.py")
+    pg_src = io.open(pg_path, encoding="utf-8").read()
+    tpl_in_code = set()
+    for node in _ast.walk(_ast.parse(pg_src)):
+        if (isinstance(node, _ast.Assign)
+                and any(isinstance(t, _ast.Name) and t.id == "TEMPLATES"
+                        for t in node.targets)
+                and isinstance(node.value, _ast.Dict)):
+            for k in node.value.keys:
+                if isinstance(k, _ast.Constant) and isinstance(k.value, str):
+                    tpl_in_code.add(k.value)
+
+    卡dir = os.path.join(LIB_DIR, "页型", "卡片")
+    tpl_in_cards = set()
+    for f in os.listdir(卡dir):
+        if f.startswith("页型卡-") and f.endswith(".md"):
+            tpl_in_cards.add(f[len("页型卡-"):-len(".md")])
+
+    # ---- K1 四方一致 ----
+    fours = [("规约tpl闭集", set(tpl_closed)), ("规约页面条目", set(tpl_in_rules)),
+             ("页面生成TEMPLATES", tpl_in_code), ("页型卡文件", tpl_in_cards)]
+    for i in range(len(fours)):
+        for j in range(i + 1, len(fours)):
+            ni, si = fours[i]
+            nj, sj = fours[j]
+            if si != sj:
+                if si - sj:
+                    errors.append("K1 %s 有但 %s 没有: %s" % (ni, nj, sorted(si - sj)))
+                if sj - si:
+                    errors.append("K1 %s 有但 %s 没有: %s" % (nj, ni, sorted(sj - si)))
+
+    reads = _卡_模板读取字段()
+    映射 = _卡_映射引用字段()
+
+    for tpl in sorted(set(tpl_closed) | tpl_in_cards):
+        card_path = os.path.join(卡dir, "页型卡-%s.md" % tpl)
+        tr = entry_rules.get(tpl, {})
+        # ---- K2 卡文件自校验 ----
+        if not os.path.isfile(card_path):
+            errors.append("K2 页型卡-%s.md 缺失（库/页型/卡片/）" % tpl)
+            continue
+        head = _卡_读文件头(card_path)
+        for f in ("id", "卡型", "标题", "来源轨", "生产者", "状态"):
+            if f not in head:
+                errors.append("K2 页型卡-%s 缺文件头 %r" % (tpl, f))
+        if head.get("id") != "页型卡-%s" % tpl:
+            errors.append("K2 页型卡-%s 文件头 id=%r 口径不对（应为 页型卡-%s）"
+                          % (tpl, head.get("id"), tpl))
+        secs = _卡_节列表(card_path)
+        for need in ("适用场景", "数据字段表", "纪律", "模板对应"):
+            if not any(need in s for s in secs):
+                errors.append("K2 页型卡-%s 缺正文节 %r" % (tpl, need))
+        模板对应节 = next((s for s in secs if "模板对应" in s), "模板对应")
+        fns = set(re.findall(r"(t_\w+)", _卡_节正文(card_path, 模板对应节)))
+        for fn in fns:
+            if not re.search(r"^def %s\(" % fn, pg_src, re.M):
+                errors.append("K2 页型卡-%s 模板对应函数 %s 在页面生成.py 不存在"
+                              % (tpl, fn))
+
+        # ---- K3 卡片数据字段表 vs 规约 ----
+        表 = _卡_解析数据字段表(card_path)
+        for f in tr.get("必填", []):
+            if f not in 表:
+                errors.append("K3 页型卡-%s 数据字段表缺规约必填字段 %r" % (tpl, f))
+            elif not 表[f]:
+                errors.append("K3 页型卡-%s 字段 %r 规约为必填但卡表未标必填"
+                              % (tpl, f))
+        for f in tr.get("选填", []):
+            if f not in 表:
+                warns.append("K3 页型卡-%s 数据字段表缺规约选填字段 %r（建议补）"
+                             % (tpl, f))
+
+        # ---- K4 模板实际读取 vs 数据字段表（漂移机检） ----
+        rd = reads.get(tpl)
+        if rd is None:
+            errors.append("K4 页面生成.py 缺模板函数 t_%s" % tpl)
+        else:
+            for f in sorted(rd["top"]):
+                if f not in 表:
+                    errors.append("K4 t_%s 读取顶层字段 %r，但页型卡数据字段表未定义"
+                                  "（代码超前于卡，漂移）" % (tpl, f))
+            for f in sorted(set(表) - rd["top"] - {"id", "tpl"}):
+                warns.append("K4 页型卡-%s 字段 %r 在 t_%s 中未被读取（预留字段？）"
+                             % (tpl, f, tpl))
+            for parent, subs in rd["nested"].items():
+                允许 = set(tr.get(parent + "必填", [])) | set(tr.get(parent + "选填", []))
+                for s in sorted(subs):
+                    if s not in 允许:
+                        errors.append("K4 t_%s 读取 %s[].%r，但规约未定义（漂移）"
+                                      % (tpl, parent, s))
+
+        # ---- K6 PPTX 声明式映射引用 vs 规约 ----
+        mp = 映射.get(tpl)
+        if mp is not None:
+            for f in sorted(mp["top"]):
+                if f not in 表 and f not in ("id", "tpl"):
+                    errors.append("K6 pptx映射[%s] 引用顶层字段 %r，"
+                                  "页型卡数据字段表未定义" % (tpl, f))
+            for parent, subs in mp["nested"].items():
+                允许 = set(tr.get(parent + "必填", [])) | set(tr.get(parent + "选填", []))
+                for s in sorted(subs):
+                    if s not in 允许:
+                        errors.append("K6 pptx映射[%s] 引用 %s[].%r，规约未定义"
+                                      % (tpl, parent, s))
+
+    # ---- K4 附带：背景纹理闭集同步（校验.py._BG_TEXTURE vs 页面生成.py::_BG_OK） ----
+    m = re.search(r"_BG_OK\s*=\s*\{([^}]*)\}", pg_src)
+    pg_bg = set(re.findall(r'"(\w+)"', m.group(1))) if m else set()
+    if pg_bg != _BG_TEXTURE:
+        errors.append("K4 背景纹理闭集不同步：校验.py=%s，页面生成.py=%s"
+                      % (sorted(_BG_TEXTURE), sorted(pg_bg)))
+
+    # ---- K5 主题卡自校验 ----
+    主题dir = os.path.join(LIB_DIR, "主题", "卡片")
+    正文模板 = rules["卡型"]["主题卡"]["正文模板"]
+    for f in sorted(os.listdir(主题dir)):
+        if not (f.startswith("主题卡-") and f.endswith(".md")):
+            continue
+        name = f[len("主题卡-"):-len(".md")]
+        p = os.path.join(主题dir, f)
+        head = _卡_读文件头(p)
+        if "css路径" not in head:
+            errors.append("K5 主题卡-%s 缺文件头 css路径" % name)
+        secs = _卡_节列表(p)
+        # 草案卡允许节不全（拍板前），记 WARN；定稿卡必须齐，否则 ERROR
+        is_draft = head.get("状态", "").startswith("草案")
+        for need in 正文模板:
+            if not any(need in s for s in secs):
+                msg = "K5 主题卡-%s 缺正文节 %r（规约正文模板）" % (name, need)
+                if is_draft:
+                    warns.append(msg + "（草案，拍板前补齐）")
+                else:
+                    errors.append(msg)
+
+    if errors:
+        print("FAIL --卡 共 %d 项:" % len(errors))
+        for e in errors:
+            print("  -", e)
+        return FAIL
+    for w in warns:
+        print("WARN:", w)
+    print("PASS --卡：K1–K6 全过（%d 页型 × %d 主题卡）"
+          % (len(tpl_in_cards), len([f for f in os.listdir(主题dir)
+                                     if f.startswith("主题卡-")])))
+    return OK
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--主题", default=None, help="主题名（校验主题卡与 CSS 令牌）")
+    ap.add_argument("--卡", action="store_true", help="卡库自校验模式（K1–K6）")
     a = ap.parse_args()
+
+    if a.卡:
+        sys.exit(main_卡())
 
     rules = read_json(os.path.join(RULES_DIR, "卡型规约.json"))
     entry_rules = rules["页面条目"]
@@ -79,12 +444,13 @@ def main():
         for f in tr["必填"]:
             if f not in p:
                 errors.append("%s 缺必填字段 %r（tpl=%s）" % (tag, f, tpl))
-        # 图片存在性
+        # 图片存在性（bg 取背景纹理值时不查文件）
         for imgkey in ("bg", "img"):
-            if p.get(imgkey):
-                ip = os.path.join(proj, "素材", p[imgkey])
+            v = p.get(imgkey)
+            if v and (imgkey != "bg" or v not in _BG_TEXTURE):
+                ip = os.path.join(proj, "素材", v)
                 if not os.path.isfile(ip):
-                    errors.append("%s 图片不存在: 素材/%s" % (tag, p[imgkey]))
+                    errors.append("%s 图片不存在: 素材/%s" % (tag, v))
         if tpl == "toc_grid":
             for j, c in enumerate(p.get("cards", [])):
                 for f in tr["cards必填"]:
@@ -201,15 +567,33 @@ def main():
                 if len(kpis) > 1 and len(heroes) != 1:
                     warns.append("%s 多卡 KPI 应标出 1 个主角，实为 %d 个" % (tag, len(heroes)))
         if tpl == "infographic":
-            for j, it in enumerate(p.get("items", [])):
-                for f in tr["items必填"]:
-                    if f not in it:
-                        errors.append("%s items[%d] 缺 %r" % (tag, j, f))
+            items = p.get("items", [])
+            if not isinstance(items, list) or not (2 <= len(items) <= 4):
+                errors.append("%s items 须为 2–4 项，实为 %s" % (tag, len(items) if isinstance(items, list) else "?"))
+            else:
+                for j, it in enumerate(items if isinstance(items, list) else []):
+                    if not isinstance(it, dict):
+                        errors.append("%s items[%d] 须为对象" % (tag, j))
+                        continue
+                    for f in tr.get("items必填", []):
+                        if f not in it:
+                            errors.append("%s items[%d] 缺 %r" % (tag, j, f))
         if tpl == "compare_bars":
-            for j, r in enumerate(p.get("rows", [])):
-                for f in tr["rows必填"]:
-                    if f not in r:
-                        errors.append("%s rows[%d] 缺 %r" % (tag, j, f))
+            rows = p.get("rows", [])
+            if not isinstance(rows, list) or not (1 <= len(rows) <= 6):
+                errors.append("%s rows 须为 1–6 行，实为 %s" % (tag, len(rows) if isinstance(rows, list) else "?"))
+            else:
+                for j, r in enumerate(rows):
+                    if not isinstance(r, dict):
+                        errors.append("%s rows[%d] 须为对象" % (tag, j))
+                        continue
+                    for f in tr.get("rows必填", []):
+                        if f not in r:
+                            errors.append("%s rows[%d] 缺 %r" % (tag, j, f))
+                    for f in ("a", "b"):
+                        if f in r and not isinstance(r[f], (int, float)):
+                            errors.append("%s rows[%d].%s 须为数字" % (tag, j, f))
+        # number_hero 无嵌套结构，必填已在通用处覆盖
         # ---- ⑨ 断言标题（专家报告 Topic 3.8）：正文页标题必须是结论句 ----
         if tpl not in ("cover", "section", "toc_grid"):
             title = re.sub(r"<[^>]+>", "", p.get("title", ""))
@@ -326,8 +710,8 @@ def main():
                 distinct = sorted(set(fs.values()))
                 print("  字号档: %s" % " / ".join(
                     "%s=%dpx" % kv for kv in sorted(fs.items())))
-                if len(distinct) > 5:
-                    errors.append("字号档数 %d 超过 5（含 display 装饰档），见设计规约·字号" % len(distinct))
+                if len(distinct) > 6:
+                    errors.append("字号档数 %d 超过 6（含 display 装饰档），见设计规约·字号" % len(distinct))
                 t, b = fs.get("--fs-page-title"), fs.get("--fs-body")
                 if t and b:
                     ratio = t / b

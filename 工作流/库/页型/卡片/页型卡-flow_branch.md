@@ -23,6 +23,7 @@
 | branches | 是 | 数组（2–4 项）；每项 {cond（条件徽标词）, result（结果，加粗标绿）, d（说明）} |
 | concl | 是 | 金边结论条（可用 `<b>` 标绿） |
 | foot | 是 | 底部右注 |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
 
 ## 纪律
 

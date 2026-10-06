@@ -7,15 +7,10 @@
   python page.py --预览 草案.json [预览目录]
                                  # 布局预览：渲染草案数据到 页/_预览/，不碰 pages.json
 
-布局模板（对应库内页型卡）:
-  cover        封面（满版图压字）
-  toc_grid     目录（2×2 带图卡）
-  section      章节页（深底 ghost 编号）
-  photo_props  图文性质页（左图右色块标签行 + 结论条）
-  photo_chain  图文因果页（左图右编号链 + 提示框）
-  table_compare 对比表页（多对象横向对比 + 结论条）
-  flow_branch  分支流程图（同一起点 → 条件分支 → 不同结果）
-  flow_cycle   循环关系图（节点环形排布 + 带标签箭头）
+布局模板（对应库内页型卡，共 18 种）:
+  cover / cover_split / toc_grid / section / photo_props / photo_chain /
+  table_compare / flow_branch / flow_cycle / timeline / cards3 / stepper /
+  equation_hero / chart / kpi_hero / infographic / compare_bars / number_hero
 """
 import io, json, os, sys
 import html as _html

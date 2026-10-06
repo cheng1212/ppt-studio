@@ -22,7 +22,12 @@
 | steps | 是 | 数组，2–4 项；每项：t（步骤标题）/ d（说明） |
 | warn | 是 | 提示框（沉底通栏，可用 `<b>` 标金） |
 | foot | 是 | 底部右注 |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
 
 ## 纪律
 
 - steps 必须为 2–4 项（校验闸拦截）。
+
+## 模板对应
+
+程序/页面生成.py `t_stepper`；PPTX 声明式映射见 程序/pptx映射.py `映射表["stepper"]`

@@ -25,6 +25,8 @@
 | img | 选填 | 配图文件名；有图时表格收至左 1080px，右 480px 配图（配图偏好：能配就配） |
 | cap | 选填 | 配图图注（有 img 时建议填） |
 | foot | 是 | 底部右注 |
+| bg | 否 | 背景纹理：dots/grid/diagonal/mesh/glow（闭集） |
+| mask | 否 | 图片蒙版：circle/rounded/blob/arch（闭集，仅有图页型） |
 
 ## 纪律
 
