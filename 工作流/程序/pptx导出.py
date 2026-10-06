@@ -20,8 +20,24 @@ from pptx import Presentation
 from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
-from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
+from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR, MSO_SHAPE_TYPE
 from pptx.oxml.ns import qn
+
+try:
+    from 动画 import 加切换, 加进入动画组
+    _有动画 = True
+except ImportError:
+    _有动画 = False
+
+
+def _是全页背景(slide, sh):
+    """占满整页的图片视为背景，进入动画时跳过。"""
+    try:
+        if sh.shape_type != MSO_SHAPE_TYPE.PICTURE:
+            return False
+        return sh.width >= slide.width * 0.9 and sh.height >= slide.height * 0.9
+    except Exception:
+        return False
 
 # ---------- 画布：1920x1080 @144px/in → 13.333 x 7.5 in ----------
 def px(v):
@@ -153,7 +169,9 @@ def badge(slide, x, y, text, kind):
     return sp, w
 
 def pic_cover(slide, path, x, y, w, h):
-    """按 object-fit:cover 裁剪嵌入图片。"""
+    """按 object-fit:cover 裁剪嵌入图片。path 为 None（无图）时直接跳过。"""
+    if not path:
+        return
     from PIL import Image
     pic = slide.shapes.add_picture(path, px(x), px(y), px(w), px(h))
     iw, ih = Image.open(path).size
@@ -321,8 +339,12 @@ def _photo_left(slide, p):
 
 def r_photo_props(slide, p):
     page_head(slide, p)
-    _photo_left(slide, p)
-    x0, w0 = 900, 900
+    if _img_path(p):
+        _photo_left(slide, p)
+        x0, w0 = 900, 900
+    else:
+        # 无图时与 HTML 的 body.noimg 一致：文字区占满整宽
+        x0, w0 = MX, CONTENT_W
     y = 330
     for r in p["rows"]:
         _, bw = badge(slide, x0, y, r["k"], r["b"])
@@ -538,12 +560,19 @@ def build(proj, out_path):
                 fn(slide, 页)
             # 切换效果：pages.json "transition": "fade"
             tr = 页.get("transition")
-            if tr:
+            if tr and _有动画:
                 try:
-                    from 动画 import 加切换
                     加切换(slide, tr)
                 except Exception as e:
                     sys.stderr.write("WARN 切换失败 %s：%s\n" % (页["id"], e))
+            # 进入动画：pages.json "enter": "fade" → 内容形状依次点击进入
+            en = 页.get("enter")
+            if en and _有动画:
+                try:
+                    内容形状 = [sh for sh in slide.shapes if not _是全页背景(slide, sh)]
+                    加进入动画组(slide, 内容形状, en)
+                except Exception as e:
+                    sys.stderr.write("WARN 进入动画失败 %s：%s\n" % (页["id"], e))
         # build 分步构建：list of 字段补丁，每步多一张幻灯片（python-pptx 无动画，用构建页模拟）
         步骤s = p.get("build")
         if 步骤s:

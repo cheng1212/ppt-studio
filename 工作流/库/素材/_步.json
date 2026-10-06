@@ -24,7 +24,7 @@
       "产出": "PNG 文件",
       "名": "生成",
       "类型": "执行",
-      "说明": "程序/生图/gemini生图.py（网页劫持，免费）或 千问生图.py（API，稳定）；生成前必须跑 python 程序/生图/prompt规约.py --检查 \"prompt\"，FAIL 不许生成"
+      "说明": "默认走 Playwright 连谷歌 Gemini（免费），千问 API（千问生图.py，需 key）仅备选。两种执行路由：(a) 本机 Chrome 以 --remote-debugging-port=9222 启动，程序/生图/gemini生图.py 直连 CDP 复用登录态；(b) 无本地 CDP 端口的托管环境，走浏览器任务复用已登录的 Gemini 会话，下载 PNG 到工作区。生成前必须跑 python 程序/生图/prompt规约.py --检查 \"prompt\"，FAIL 不许生成。纪律：生图一律走 Playwright 连谷歌（千问仅备选），禁桌面劫持。"
     },
     {
       "id": "M3",
@@ -36,5 +36,5 @@
   ],
   "步": "生图",
   "纪律": "先查素材卡：已有可复用的不重复生成；prompt 原文留痕；【中国人默认·2026-10-05 chengge 定】所有生图 prompt 默认按中国场景写：有人物→东亚面孔中国人（prompt 加 'Chinese people, East Asian features'）；场景→中国（教室/办公室/街道/家庭/城市按题材选，prompt 明确写 'in China' 或中式元素如中文招牌/中式 interiors）；抽象图/物品图不受影响；需求明确指定外国人物/场景时以需求为准并在素材卡备注。【写实默认·2026-10-05】去 AI 味：人物 prompt 拼写实后缀（程序/生图/prompt规约.py --写实），用摄影语言（50mm/f2.8/皮肤纹理/胶片颗粒/抓拍瞬间），禁 8K/masterpiece/flawless 等堆砌词。",
-  "说明": "素材生产。双源互备：Gemini 网页劫持（需本机 Chrome CDP 9222 + 登录态）/ 千问 API（需 ZCode 配置 key）。"
+  "说明": "素材生产。双源互备：Playwright 连谷歌生图（免费）/ 千问 API（需 ZCode 配置 key）。"
 }

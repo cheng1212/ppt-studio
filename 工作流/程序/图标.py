@@ -9,11 +9,14 @@ fill=none。用法：
     icon("增长")           # → <svg ...>...</svg> 字符串（currentColor 着色）
     icon("增长", 48, "#FF6A1A")  # 指定尺寸和颜色
 
-HTML 模板里直接嵌入；PPTX 导出时转 PNG 贴（见 pptx映射.py 图片组件扩展）。
+HTML 模板里直接嵌入；PPTX 导出时经 icon_png() 转 PNG 贴（pptx映射.py 图标组件）。
 
 图标命名用中文，贴近 PPT 文案习惯。别名支持英文。
 """
+import os as _os
 import re
+
+_icon_cache = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "_icon_cache")
 
 _STROKE = ('<svg xmlns="http://www.w3.org/2000/svg" width="{s}" height="{s}" '
            'viewBox="0 0 24 24" fill="none" stroke="{c}" stroke-width="2" '
@@ -89,6 +92,29 @@ def icon(名, 尺寸=24, 颜色="currentColor"):
 
 def 列表():
     return sorted(ICONS)
+
+
+def icon_png(名, 尺寸=96, 颜色="#FF6A1A"):
+    """图标渲染为 PNG 文件（cairosvg），返回路径；按 名/尺寸/颜色 缓存。
+
+    颜色：#rrggbb 字符串。缺图标名时抛 ValueError（调用方可跳过）。
+    """
+    key = 别名.get(名, 名)
+    if key not in ICONS:
+        raise ValueError("未知图标：%r" % 名)
+    c = 颜色.lstrip("#") or "FF6A1A"
+    safe = re.sub(r"[^\w\-]", "_", key)
+    path = _os.path.join(_icon_cache, "%s_%d_%s.png" % (safe, 尺寸, c))
+    if not _os.path.isfile(path):
+        _os.makedirs(_icon_cache, exist_ok=True)
+        try:
+            import cairosvg
+        except ImportError:
+            raise RuntimeError("icon_png 需要 cairosvg：pip install cairosvg")
+        svg = icon(key, 尺寸, "#" + c).encode("utf-8")
+        cairosvg.svg2png(bytestring=svg, write_to=path,
+                         output_width=尺寸, output_height=尺寸)
+    return path
 
 
 if __name__ == "__main__":

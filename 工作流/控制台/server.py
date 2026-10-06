@@ -14,8 +14,9 @@ API:
     GET  /api/页型列表      → {tpl: 说明}
 
 启动：
-    python 工作流/控制台/server.py --port 8901
-    浏览器打开 http://localhost:8901/
+    python 工作流/控制台/server.py --port 8901 [--host 0.0.0.0]
+    浏览器打开 http://localhost:8901/（本机）
+    手机访问：见 工作流/控制台/手机访问.md（--host 0.0.0.0 + 手机连同 WiFi 打开 http://<电脑IP>:8901）
 """
 import base64
 import io
@@ -246,11 +247,24 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     import argparse
+    import socket
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8901)
+    ap.add_argument("--host", default="127.0.0.1",
+                    help="监听地址：默认 127.0.0.1（仅本机）；"
+                         "手机/局域网访问时用 0.0.0.0（仅可信网络）")
     a = ap.parse_args()
-    srv = HTTPServer(("127.0.0.1", a.port), Handler)
-    print("PPT Studio 控制台 → http://localhost:%d/" % a.port)
+    srv = HTTPServer((a.host, a.port), Handler)
+    if a.host == "0.0.0.0":
+        try:
+            lan = socket.gethostbyname(socket.gethostname())
+        except Exception:
+            lan = "<本机IP>"
+        print("PPT Studio 控制台（局域网）→ http://%s:%d/（手机连同 WiFi 打开）"
+              % (lan, a.port))
+        print("注意：仅在可信网络使用 0.0.0.0，公网请走反向代理+鉴权（见 手机访问.md）")
+    else:
+        print("PPT Studio 控制台 → http://localhost:%d/" % a.port)
     srv.serve_forever()
 
 

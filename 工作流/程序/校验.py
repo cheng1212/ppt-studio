@@ -200,6 +200,16 @@ def main():
                 heroes = [k for k in kpis if k.get("hero")]
                 if len(kpis) > 1 and len(heroes) != 1:
                     warns.append("%s 多卡 KPI 应标出 1 个主角，实为 %d 个" % (tag, len(heroes)))
+        if tpl == "infographic":
+            for j, it in enumerate(p.get("items", [])):
+                for f in tr["items必填"]:
+                    if f not in it:
+                        errors.append("%s items[%d] 缺 %r" % (tag, j, f))
+        if tpl == "compare_bars":
+            for j, r in enumerate(p.get("rows", [])):
+                for f in tr["rows必填"]:
+                    if f not in r:
+                        errors.append("%s rows[%d] 缺 %r" % (tag, j, f))
         # ---- ⑨ 断言标题（专家报告 Topic 3.8）：正文页标题必须是结论句 ----
         if tpl not in ("cover", "section", "toc_grid"):
             title = re.sub(r"<[^>]+>", "", p.get("title", ""))

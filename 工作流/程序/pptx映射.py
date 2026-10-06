@@ -14,6 +14,9 @@
              "size":45,"color":"ink","bold":True,"align":"left"}
             字段值支持行内 <b>/<em>/<span class="q|ox">（复用 segs 解析）
     图片    {"组件":"图片","字段":"img","x":..,"y":..,"w":..,"h":..,"fit":"cover|contain"}
+    图标    {"组件":"图标","字段":"icon","x":..,"y":..,"w":64,"h":64,"color":"gold"}
+            字段为图标库中文名（图标.py），经 icon_png 转 PNG 贴图；
+            color 为主题令牌或 #rrggbb；字段为空时跳过不渲染
     矩形    {"组件":"矩形","x":..,"y":..,"w":..,"h":..,"fill":"card","line":None}
     线条    {"组件":"线条","x1":..,"y1":..,"x2":..,"y2":..,"color":"gold","w":2}
     徽章    {"组件":"徽章","字段":"k","x":..,"y":..,"kind":"gold"}
@@ -156,6 +159,24 @@ def 渲染组件(slide, 组件, ctx):
                 open(path, "wb").write(base64.b64decode(m.group(2)))
         x, y, w, h = _xy(组件, ctx, "x", "y", "w", "h")
         E.pic_cover(slide, path, x, y, w, h)
+    elif kind == "图标":
+        v = _字段(ctx, 组件.get("字段"))
+        if not v:
+            return
+        try:
+            from 图标 import icon_png
+        except ImportError:
+            return
+        color = 组件.get("color", "gold")
+        hexcolor = (color if color.startswith("#")
+                    else "#" + E._TOKS.get(color, "FF6A1A"))
+        x, y, w, h = _xy(组件, ctx, "x", "y", "w", "h")
+        size = int(min(w or 64, h or 64))
+        try:
+            path = icon_png(str(v), size, hexcolor)
+        except (ValueError, RuntimeError):
+            return  # 未知图标名 → 跳过，不炸整页
+        E.pic_cover(slide, path, x, y, w, h)
     elif kind == "矩形":
         x, y, w, h = _xy(组件, ctx, "x", "y", "w", "h")
         E.rect(slide, x, y, w, h,
@@ -264,12 +285,14 @@ def 渲染声明式(slide, p, 映射):
         ]},
     ],
     "infographic": [
-        # 信息图：2-4项横向卡片（图标在PPTX中省略，数字/标签/说明承载信息）
+        # 信息图：2-4项横向卡片，图标经 图标组件 转 PNG 贴图
         {"组件": "底色"},
         {"组件": "页眉"}, {"组件": "页脚"},
         {"组件": "循环", "字段": "items", "模板": [
             {"组件": "矩形", "x": "{96+i*(1728/_n)}", "y": 360,
              "w": "{1728/_n-24}", "h": 420, "fill": "card"},
+            {"组件": "图标", "字段": "{it.icon}", "x": "{96+i*(1728/_n)+(1728/_n-88)/2}",
+             "y": 404, "w": 64, "h": 64, "color": "gold"},
             {"组件": "文本", "字段": "{it.v}", "x": "{120+i*(1728/_n)}", "y": 500,
              "w": "{1728/_n-72}", "h": 90,
              "size": 64, "color": "ink", "bold": True, "align": "center"},
@@ -307,9 +330,11 @@ def 渲染声明式(slide, p, 映射):
         {"组件": "结论条", "字段": "concl", "x": 96, "y": "{430+150*_n}", "w": 1728},
     ],
     "number_hero": [
-        # 大数字：一页一个数字做视觉锤（图标省略）
+        # 大数字：一页一个数字做视觉锤；icon 可选，有则画在数字上方
         {"组件": "底色"},
         {"组件": "页眉"}, {"组件": "页脚"},
+        {"组件": "图标", "字段": "icon", "x": 924, "y": 272, "w": 72, "h": 72,
+         "color": "gold"},
         {"组件": "文本", "字段": "v", "x": 96, "y": 360, "w": 1728, "h": 220,
          "size": 200, "color": "gold", "bold": True, "align": "center"},
         {"组件": "文本", "字段": "label", "x": 96, "y": 600, "w": 1728, "h": 70,

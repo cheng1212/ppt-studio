@@ -54,6 +54,22 @@ textarea{min-height:80px;resize:vertical}
 .row{display:flex;gap:12px;align-items:center;margin-top:20px}
 .loading{color:var(--muted);padding:40px;text-align:center}
 .hidden{display:none}
+/* ---- 移动端适配（P0-2） ---- */
+@media (max-width:720px){
+  header{padding:14px 16px}
+  header h1{font-size:17px}
+  main{padding:16px}
+  .steps{gap:6px}
+  .step{font-size:12px;padding:10px 6px}
+  .card{padding:16px}
+  .themes{grid-template-columns:1fr}
+  .thumbs{grid-template-columns:repeat(2,1fr)}
+  .fields{grid-template-columns:1fr}
+  .page .ph{flex-wrap:wrap}
+  .page .ph select{width:100%;margin-left:0}
+  .btn{padding:12px 20px}
+  .row{flex-wrap:wrap}
+}
 </style>
 </head>
 <body>
@@ -187,6 +203,8 @@ function pageEl(p, idx){
         <option>diagonal</option><option>mesh</option><option>glow</option></select></div>
       <div class="field"><label>切换 transition</label><select data-f="transition">
         <option value="">无</option><option>fade</option><option>push</option><option>wipe</option></select></div>
+      <div class="field"><label>进入动画 enter</label><select data-f="enter">
+        <option value="">无</option><option>fade</option><option>appear</option><option>fly</option><option>zoom</option></select></div>
     </div>`;
   return d;
 }
@@ -206,6 +224,7 @@ function collect(){
     try{ const d = g('data'); if(d) Object.assign(p, JSON.parse(d)); }catch(e){ p._err='数据JSON格式错误'; }
     if(g('bg')) p.bg=g('bg');
     if(g('transition')) p.transition=g('transition');
+    if(g('enter')) p.enter=g('enter');
     pages.push(p);
   });
   return pages;

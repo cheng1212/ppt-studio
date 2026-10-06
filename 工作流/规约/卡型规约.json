@@ -224,7 +224,10 @@
       "equation_hero",
       "chart",
       "kpi_hero",
-      "cover_split"
+      "cover_split",
+      "infographic",
+      "compare_bars",
+      "number_hero"
     ],
     "说明": "pages.json 的条目规约（按 tpl 分）。tpl 为闭集，未知 tpl 即拒。校验器按此校验。",
     "通用必填": [
@@ -483,6 +486,7 @@
     "说明": "所有页型通用，不写不报错。校验.py 不强制，但写了必须非空。",
     "bg": "背景纹理：dots/grid/diagonal/mesh/glow。body class 级，全页生效，低透明度不抢内容。",
     "mask": "图片蒙版：circle/rounded/blob/arch。拼到图片容器 class，圆角/异形裁切。",
-    "transition": "切换效果：fade/push/wipe/split/blinds/dissolve/cover/uncover。→ PPTX 页面切换。"
+    "transition": "切换效果：fade/push/wipe/split/blinds/dissolve/cover/uncover。→ PPTX 页面切换。",
+    "enter": "进入动画：appear/fade/fly/zoom。→ PPTX 内容形状按创建顺序依次点击进入（全页背景图除外）。"
   }
 }

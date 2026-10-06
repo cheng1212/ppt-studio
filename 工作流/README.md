@@ -50,6 +50,8 @@
 3. 校验：python 程序/校验.py                 # 闸：tpl 闭集/必填/枚举/图片存在/选型一致性
 4. 生成：python 程序/页面生成.py            # 数据 → HTML（零手写 HTML）
 5. 出图：python 程序/截图.py "<项目>/页"     # 批量 PNG
+6. 审美评审：python 程序/审美评审.py --项目 <项目> --主题 <主题>   # 备料→经 Playwright 送 Gemini/ChatGPT
+   # 评审意见存 页/_评审/评审意见.md → --过闸：全覆盖+修改清单；模型只给意见，合格与否由用户判定（用户定案）
 ```
 
 ## 整体流程（定案：先整篇预览过审，再建导出）
@@ -70,6 +72,25 @@ E1. 导出：从 pages.json 数据原生构建可编辑 PPTX（程序待建，�
 `python 程序/流水线.py 状态` 随时看进度。
 
 PPTX 是唯一的客户交付物：PNG/HTML 只做预览与过程检查，不直接交付。
+
+## 一句话模式（内容生成层，P0-1）
+
+上面是手工流水线；一句话模式是它的自动化版本——输入一句话，直接出 pages.json：
+
+```
+python 程序/内容生成.py 大纲   --输入 "双11大促战报" --输出 /tmp/outline.json
+python 程序/内容生成.py 填写单 --大纲 /tmp/outline.json --输出 /tmp/fill.json [--主题 dianshang]
+# agent 按 fill.json 的填写说明逐页填 填/图表/配图（文案/数据/拍板标题），存 filled.json
+python 程序/内容生成.py 组装   --填写 /tmp/filled.json --项目 示例-双11/双11战报 [--主题 dianshang]
+python 程序/内容生成.py 配图   --填写 /tmp/fill.json   # 打印配图 prompt 清单
+```
+
+- 填写单：意图→选型规约自动选型（含 _选型留痕）→ 卡型规约出必填字段单 → prompt规约出配图 prompt
+- 组装：chart 页 数据→洞察.py（断言标题+insight）→图表.py 渲染 PNG；缺图自动占位图过闸（交付前须换真实生图）；最后过 校验.py，FAIL 不许绕过
+- 生图：`内容生成.py 生图 --填写 filled.json --项目 <项目> [--后端 千问|gemini] [--只 P1,P3] [--演练]`
+  占位图→真实生图（素材/_步.json M1–M4）：prompt规约 --检查强制 → 后端生图 → 素材/ + 素材卡.jsonl 登记 → 配图.状态=已生图（写回 fill.json，可续跑）；生图后重跑 页面生成+截图
+- 规约：规约/内容生成规约.json（选型规则/文案纪律/图表纪律/配图纪律/字段说明）
+- 样张：工作流/示例-双11/双11战报（11 页，dianshang 主题，校验 PASS，HTML+PNG 已出）
 
 新主题（定案 D1：改主题 = 换主题卡 + 换 CSS，不碰程序）：
 

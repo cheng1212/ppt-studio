@@ -97,6 +97,13 @@ def _theme_is_light():
     return (0.2126*r + 0.7152*g + 0.0722*b) / 255 > 0.5
 
 
+def _theme_bg_dark_rgb():
+    """从主题 CSS 解析 --bg-dark 的 RGB，供深色封面罩衫与主题同色。"""
+    m = _re.search(r"--bg-dark:\s*#([0-9a-fA-F]{6})", THEME)
+    h = m.group(1) if m else "252C2B"
+    return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+
+
 def t_cover(p):
     # 罩子按主题 --bg 深浅自适应：浅底主题用浅色雾面罩+深色字（与内页同语言），
     # 深底主题保持深色罩+浅色字（老项目渲染不变）。
@@ -105,12 +112,16 @@ def t_cover(p):
         scrim = (f"linear-gradient(90deg, rgba({r},{g},{b},.97) 0%, rgba({r},{g},{b},.90) 36%,"
                  f"rgba({r},{g},{b},.45) 58%, rgba({r},{g},{b},0) 78%)")
         bodycls = ""
+        dark_aux = ""
         eyebrow_c, sub_c, foot_c, na_c = "var(--gold)", "var(--muted)", "var(--muted)", "var(--gold)"
     else:
-        scrim = ("linear-gradient(90deg, rgba(37,44,43,.95) 0%, rgba(37,44,43,.88) 36%,"
-                 "rgba(37,44,43,.45) 58%, rgba(37,44,43,0) 78%)")
+        dr, dg, db = _theme_bg_dark_rgb()
+        scrim = (f"linear-gradient(90deg, rgba({dr},{dg},{db},.95) 0%, rgba({dr},{dg},{db},.88) 36%,"
+                 f"rgba({dr},{dg},{db},.45) 58%, rgba({dr},{dg},{db},0) 78%)")
         bodycls = "dark"
-        eyebrow_c, sub_c, foot_c, na_c = "var(--silver)", "var(--silver)", "var(--silver)", "var(--gold-soft)"
+        # 审美评审 P01-①：辅助文字提亮到近白 78%（投影可读）；na 保持主题辅助色
+        eyebrow_c, sub_c, foot_c, na_c = "var(--ink-dark)", "var(--ink-dark)", "var(--ink-dark)", "var(--gold-soft)"
+        dark_aux = "  .eyebrow,.sub,.footline2 span{opacity:.78}\n"
     extra = (
         "  .hero{position:absolute;inset:0;background:" + img(p["bg"]) + " center/cover no-repeat}\n"
         "  .scrim{position:absolute;inset:0;background:" + scrim + "}\n"
@@ -124,6 +135,8 @@ def t_cover(p):
         "  .footline2{position:absolute;left:130px;bottom:74px;display:flex;align-items:center;gap:22px}\n"
         "  .footline2 .line{width:56px;height:2px;background:var(--gold)}\n"
         "  .footline2 span{font-size:var(--fs-cap);color:" + foot_c + ";letter-spacing:.28em}\n"
+        # 审美评审 P01-②：深色封面装饰横线用氧化橙（与右侧灯泡暖光呼应）
+        + (dark_aux + "  .block .gold-rule{background:var(--ox)}\n" if bodycls == "dark" else "")
     )
     h = HEAD.format(theme=THEME, extra=extra, bodycls=bodycls)
     b = f"""  <div class="hero"></div><div class="scrim"></div>
@@ -206,9 +219,10 @@ def t_toc_grid(p):
     cells = ""
     for c in p["cards"]:
         contain = " contain" if c.get("contain") else ""
+        ph = (f"""      <div class="ph{contain}" style="background-image:{img(c['img'])}"></div>\n"""
+              if c.get("img") else "")
         cells += f"""    <div class="cell">
-      <div class="ph{contain}" style="background-image:{img(c['img'])}"></div>
-      <div class="ct"><div class="eb">{esc(c['no'])}</div>
+{ph}      <div class="ct"><div class="eb">{esc(c['no'])}</div>
         <div class="zh">{esc(c['zh'])}</div>
         <div class="desc">{esc(c['desc'])}</div></div>
     </div>\n"""
@@ -277,17 +291,22 @@ def t_photo_props(p):
   .v .d{margin-top:6px;font-size:var(--fs-cap);color:var(--muted);line-height:1.6}
   .concl{margin-top:26px}
   body.noimg .props{left:var(--mx);width:var(--cw)}
+  body.dense4 .prop{padding:16px 0 14px}
+  body.dense4 .v .n{font-size:var(--fs-body)}
+  body.dense4 .v .d{font-size:var(--fs-desc)}
 """
     noimg = not p.get("img")
-    h = HEAD.format(theme=THEME, extra=extra, bodycls=_bgcls(p, "noimg") if noimg else "")
+    dense = " dense4" if len(p.get("rows", [])) >= 4 else ""
+    h = HEAD.format(theme=THEME, extra=extra, bodycls=(_bgcls(p, "noimg") if noimg else "") + dense)
     rows = ""
     for r in p["rows"]:
         rows += f"""    <div class="prop hairline"><div class="badge badge {r['b']}">{esc(r['k'])}</div>
       <div class="v"><div class="n">{esc(r['n'])}</div>
       <div class="d">{esc(r['d'])}</div></div></div>\n"""
     if p.get("img"):
-        photo_props_img = f"""  <div class="photo photo{_maskcls(p)}" style="background-image:{img(p['img'])}">
-    <div class="tag" style="position:absolute;left:24px;top:28px">{esc(p.get('tag',''))}</div>
+        _tag = (f'\n    <div class="tag" style="position:absolute;left:24px;top:28px">'
+                f'{esc(p["tag"])}</div>' if p.get("tag") else "")
+        photo_props_img = f"""  <div class="photo photo{_maskcls(p)}" style="background-image:{img(p['img'])}">{_tag}
   </div>"""
         photo_props_cap = f"""  <div class="cap cap" style="position:absolute">{esc(p.get('cap',''))}</div>"""
     else:
@@ -325,9 +344,13 @@ def t_photo_chain(p):
         padding:24px 30px;font-size:var(--fs-cap);color:var(--ink);line-height:1.8}
   .warn b{color:var(--green)}
   body.noimg .chain{left:var(--mx);width:var(--cw)}
+  body.dense4 .arrow{margin:8px 0 8px 14px}
+  body.dense4 .warn{margin-top:20px;padding:16px 20px}
+  body.dense4 .st .d{font-size:var(--fs-desc);line-height:1.6}
 """
     noimg = not p.get("img")
-    h = HEAD.format(theme=THEME, extra=extra, bodycls=_bgcls(p, "noimg") if noimg else "")
+    dense = " dense4" if len(p.get("steps", [])) >= 4 else ""
+    h = HEAD.format(theme=THEME, extra=extra, bodycls=(_bgcls(p, "noimg") if noimg else "") + dense)
     steps = ""
     for i, s in enumerate(p["steps"]):
         steps += f"""    <div class="step"><div class="numdot">{i+1}</div>
@@ -426,8 +449,8 @@ def t_cards3(p):
     h = HEAD.format(theme=THEME, extra=extra, bodycls=_bgcls(p, ""))
     cards = ""
     for c in p["cards"]:
-        cards += f"""    <div class="card3" style="border-top-color:var(--{c['b']})">
-      <span class="badge badge {c['b']}">{esc(c['k'])}</span>
+        cards += f"""    <div class="card3" style="border-top-color:var(--{c.get('b','gold')})">
+      <span class="badge badge {c.get('b','gold')}">{esc(c['k'])}</span>
       <div class="n">{esc(c['n'])}</div>
       <div class="d">{esc(c['d'])}</div></div>\n"""
     b = f"""  <div class="brow">{esc(p['brow'])}</div><div class="pageno">{esc(p['no'])}</div>
@@ -497,8 +520,8 @@ def t_equation_hero(p):
     h = HEAD.format(theme=THEME, extra=extra, bodycls=_bgcls(p, ""))
     cards = ""
     for c in p["cards"]:
-        cards += f"""    <div class="eqcard" style="border-left-color:var(--{c['b']})">
-      <div class="k" style="color:var(--{c['b']})">{esc(c['k'])}</div>
+        cards += f"""    <div class="eqcard" style="border-left-color:var(--{c.get('b','gold')})">
+      <div class="k" style="color:var(--{c.get('b','gold')})">{esc(c['k'])}</div>
       <div class="n">{esc(c['n'])}</div>
       <div class="d">{esc(c['d'])}</div></div>\n"""
     b = f"""  <div class="brow">{esc(p['brow'])}</div><div class="pageno">{esc(p['no'])}</div>
@@ -652,7 +675,7 @@ def t_chart(p):
     # 图表由 程序/图表.py 生成（declutter 焊死）；本模板只负责版式
     # 版式：图左1080 + 右480解读栏；无解读时图占全宽
     has_insight = bool(p.get("insight"))
-    cw = "1080px" if has_insight else "var(--cw)"
+    cw = "1040px" if has_insight else "var(--cw)"
     extra = """
   .cwrap{position:absolute;left:var(--mx);top:352px;width:var(--cw);display:flex;gap:var(--space-3)}
   .cfig{flex:none;width:%s}
