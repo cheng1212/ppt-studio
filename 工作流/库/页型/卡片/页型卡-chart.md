@@ -6,6 +6,7 @@
 - 来源轨: 专家报告 encoding（Tufte/Few/Knaflic）
 - 生产者: chengge
 - 状态: 定稿
+- 版式族: 数据
 
 ## 适用场景
 

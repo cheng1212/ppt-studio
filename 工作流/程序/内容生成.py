@@ -122,7 +122,14 @@ def _场景建议(题材, 意图):
     return "办公室"
 
 
-def 生成briefs(大纲, rules, sel_rules):
+def 生成briefs(大纲, rules, sel_rules, 主题=None):
+    """每页 brief 含"主题知识"+"版式族知识"两键（知识包，只给本页需要的摘要）。
+
+    主题：由调用方显式传入（cmd_一句话 的 --主题拍板结果）；独立跑 briefs
+    子命令时可 --主题 指定；缺省则 "主题知识"=None，writer 不许自选主题。
+    """
+    from 卡库索引 import load_index, 知识包_主题
+    idx = load_index()
     briefs = []
     for i, 页 in enumerate(大纲["页"]):
         选型, 选中 = _选型计算(页["意图"], 页.get("tpl建议", []), sel_rules)
@@ -164,6 +171,12 @@ def 生成briefs(大纲, rules, sel_rules):
                                     "单位": "单位（可空）"}}
                      if tpl == "chart" else None),
             "配图": _配图需求(tpl, 页["意图"], (大纲.get("意图") or {}).get("题材")),
+            "主题知识": 知识包_主题(主题) if 主题 else None,
+            "版式族知识": ({
+                "族": 族,
+                "何时用": idx["族"][族]["何时用"],
+                "选型口诀": idx["族"][族].get("选型口诀", ""),
+            } if (族 := idx["tpl族"].get(tpl)) and 族 in idx["族"] else None),
         })
     return briefs, None
 
@@ -172,7 +185,8 @@ def cmd_briefs(a):
     rules = read_json(os.path.join(RULES_DIR, "卡型规约.json"))
     sel_rules = read_json(os.path.join(RULES_DIR, "选型规约.json"))
     大纲 = read_json(a.大纲)
-    briefs, err = 生成briefs(大纲, rules, sel_rules)
+    briefs, err = 生成briefs(大纲, rules, sel_rules,
+                             主题=getattr(a, "主题", None))
     if err:
         die(err, code=FAIL)
     os.makedirs(a.输出, exist_ok=True)
@@ -325,14 +339,30 @@ def _set_img(entry, 字段, fname):
         entry[字段] = fname
 
 
+def _主题拍板(a, 大纲=None):
+    """主题是关键视觉决策，必须显式指定，不静默取默认（拍板文化）。"""
+    if a.主题:
+        return a.主题
+    print("主题未指定，停下等拍板。可选（推荐前3）：")
+    recs = []
+    if 大纲:
+        for t in (大纲.get("主题推荐") or [])[:3]:
+            recs.append(t)
+            print("  - %s：%s" % (t["主题"], t.get("一句话", "")[:60]))
+    else:
+        print("  （无大纲上下文，请直接 --主题 <名>）")
+    die("请用 --主题 <名> 显式指定后重跑", code=USAGE)
+
+
 def cmd_收集(a):
     rules = read_json(os.path.join(RULES_DIR, "卡型规约.json"))
+    a.主题 = _主题拍板(a)
     proj = os.path.normpath(os.path.join(WORKFLOW, a.项目))
     页dir = os.path.join(proj, "页")
     素材dir = os.path.join(proj, "素材")
     os.makedirs(页dir, exist_ok=True)
     os.makedirs(素材dir, exist_ok=True)
-    主题 = a.主题 or "sodium"
+    主题 = a.主题
 
     briefs, filled = {}, {}
     for f in os.listdir(a.briefs):
@@ -345,10 +375,21 @@ def cmd_收集(a):
             filled[os.path.splitext(f)[0]] = d
 
     errors, debt, pages = [], {"待手填": [], "说明": []}, []
+    旧规划 = {}
+    try:
+        旧规划 = read_json(os.path.join(proj, "配图规划.json"))
+    except Exception:
+        pass
     配图规划 = {}
     素材卡 = []
 
-    for 页id in sorted(briefs):
+    def _页序(页id):
+        # 2026-10-06 跑即完善：字符串排序会把 P10 排到 P2 前面，页序错乱；按数字自然排序
+        import re
+        m = re.search(r"(\d+)$", 页id)
+        return (int(m.group(1)) if m else 0, 页id)
+
+    for 页id in sorted(briefs, key=_页序):
         b = briefs[页id]
         d = filled.get(页id)
         if d is None:
@@ -370,6 +411,13 @@ def cmd_收集(a):
                 continue
             fname = "%s-%s.png" % (页id, "bg" if 字段 == "bg" else "img")
             fpath = os.path.join(素材dir, fname)
+            旧 = 旧规划.get(页id) or {}
+            if 旧.get("文件") == fname and str(旧.get("状态", "")).startswith("已生图") \
+                    and os.path.isfile(fpath):
+                # 已有真实配图：复用，不覆盖、不重登记
+                _set_img(entry, 字段, fname)
+                配图规划[页id] = 旧
+                continue
             prompt, ok, missing = _配图提示(用途, 需["场景建议"], None)
             real = None
             if a.生图:
@@ -409,7 +457,9 @@ def cmd_收集(a):
                            "模型": "程序/图表.py", "尺寸": "程序默认",
                            "用于": "%s.img" % 页id, "来源轨": "内容生成"})
             ins, ierr = _gen_insight(spec.get("类型", "bar"), spec.get("数据"))
-            if ierr:
+            if entry.get("insight"):
+                pass  # writer 已提供解读，自动洞察不覆盖（2026-10-06 跑即完善）
+            elif ierr:
                 debt["说明"].append("%s 洞察失败（%s），insight 留空" % (页id, ierr))
             else:
                 entry["insight"] = ins
@@ -421,8 +471,21 @@ def cmd_收集(a):
     with io.open(os.path.join(proj, "配图规划.json"), "w", encoding="utf-8") as f:
         json.dump(配图规划, f, ensure_ascii=False, indent=2)
     if 素材卡:
-        with io.open(os.path.join(素材dir, "素材卡.jsonl"), "a", encoding="utf-8") as f:
-            for c in 素材卡:
+        卡path = os.path.join(素材dir, "素材卡.jsonl")
+        旧卡 = []
+        if os.path.isfile(卡path):
+            for ln in io.open(卡path, encoding="utf-8"):
+                ln = ln.strip()
+                if ln:
+                    旧卡.append(json.loads(ln))
+        新文件 = {c["文件"] for c in 素材卡}
+        去重 = {}
+        for c in 旧卡:
+            if c.get("文件") not in 新文件:
+                去重[c.get("文件")] = c  # 同文件保留最后一条
+        旧卡 = list(去重.values())
+        with io.open(卡path, "w", encoding="utf-8") as f:
+            for c in 旧卡 + 素材卡:
                 f.write(json.dumps(c, ensure_ascii=False) + "\n")
     with io.open(os.path.join(proj, "内容生成_debt.json"), "w", encoding="utf-8") as f:
         json.dump(debt, f, ensure_ascii=False, indent=2)
@@ -458,14 +521,15 @@ def cmd_一句话(a):
     with io.open(os.path.join(proj, "大纲.json"), "w", encoding="utf-8") as f:
         json.dump(大纲, f, ensure_ascii=False, indent=2)
     print("大纲：%d 页，模板=%s" % (大纲["页数"], 大纲["大纲模板"]), file=sys.stderr)
-    主题 = a.主题 or (大纲["主题推荐"][0]["主题"] if 大纲["主题推荐"] else "sodium")
+    _主题拍板(a, 大纲)
+    主题 = a.主题
     print("主题：%s" % 主题, file=sys.stderr)
 
     briefs_dir = os.path.join(proj, "briefs")
     filled_dir = os.path.join(proj, "filled")
     os.makedirs(filled_dir, exist_ok=True)
     rc = cmd_briefs(argparse.Namespace(大纲=os.path.join(proj, "大纲.json"),
-                                      输出=briefs_dir))
+                                      输出=briefs_dir, 主题=主题))
     if rc != OK:
         return rc
 
@@ -528,6 +592,7 @@ def main():
     b = sub.add_parser("briefs")
     b.add_argument("--大纲", required=True)
     b.add_argument("--输出", required=True)
+    b.add_argument("--主题", default=None, help="主题 id（知识包用；缺省则 brief 的主题知识为 None）")
     c = sub.add_parser("收集")
     c.add_argument("--briefs", required=True)
     c.add_argument("--filled", required=True)

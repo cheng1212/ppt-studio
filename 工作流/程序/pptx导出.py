@@ -47,6 +47,10 @@ THEME_CSS = theme_css_path()
 _TOKS, _FS, FONT = parse_theme(THEME_CSS)
 
 def C(name):
+    # 2026-10-06 扩展：支持 "#RRGGBB" 直写（暗黑奢华封面等主题无关色）；
+    # 主题令牌仍走 _TOKS。
+    if isinstance(name, str) and name.startswith("#"):
+        return RGBColor.from_string(name.lstrip("#"))
     return RGBColor.from_string(_TOKS[name])
 
 def blend(h1, h2, t):
@@ -167,6 +171,21 @@ def pic_cover(slide, path, x, y, w, h):
     pic.line.fill.background()
     return pic
 
+
+def set_pic_alpha(pic, alpha_pct):
+    """图片整体不透明度（0–100）：双重曝光等叠加场景用。
+
+    通过 a:alphaModFix 实现（amt 单位为千分比）。"""
+    try:
+        blipFill = pic._element.find(qn("p:blipFill"))
+        blip = blipFill.find(qn("a:blip")) if blipFill is not None else None
+        if blip is None:
+            return
+        amt = int(max(0, min(100, alpha_pct)) * 1000)
+        blip.append(blip.makeelement(qn("a:alphaModFix"), {"amt": str(amt)}))
+    except Exception:
+        pass
+
 def arrow_line(slide, x1, y1, x2, y2, color="green", w_pt=3, head=18):
     conn = slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,
                                       px(x1), px(y1), px(x2), px(y2))
@@ -227,6 +246,13 @@ def _img_path(p, key="img"):
         return None
     return os.path.normpath(os.path.join(project_dir(), "素材", name))
 
+def _theme_is_light():
+    """按 --bg 亮度判断主题深浅（与 页面生成.py::_theme_is_light 同口径）。"""
+    h = _TOKS.get("bg", "F7F9F8").lstrip("#")
+    r, g, b = (int(h[i:i+2], 16) for i in (0, 2, 4))
+    return (0.2126*r + 0.7152*g + 0.0722*b) / 255 > 0.5
+
+
 def r_cover(slide, p):
     from PIL import Image, ImageDraw
     bg = _img_path(p, "bg")
@@ -255,55 +281,68 @@ def r_cover(slide, p):
                 pxm[x, 0] = int(255 * (a0 + (a1 - a0) * t_))
                 break
     mask = mask.resize((W, H))
-    dark = Image.new("RGB", (W, H), tuple(int(_TOKS["bg-dark"][i:i + 2], 16)
+    scrim_hex = _TOKS["bg"] if _theme_is_light() else _TOKS["bg-dark"]
+    dark = Image.new("RGB", (W, H), tuple(int(scrim_hex[i:i + 2], 16)
                                           for i in (0, 2, 4)))
     im = Image.composite(dark, im, mask)
     tmp = os.path.join("/tmp", "pptx-cover-%s.png" % p["id"])
     im.save(tmp)
     slide.shapes.add_picture(tmp, px(0), px(0), px(W), px(H))
 
+    light = _theme_is_light()
+    c_eyebrow, c_title, c_sub, c_foot, c_corner = (
+        ("gold", "ink", "muted", "muted", "gold") if light else
+        ("silver", "ink-dark", "silver", "silver", "gold-soft"))
     tf = textbox(slide, 130, 340, 900, 60)
-    para(tf, p.get("eyebrow", ""), _FS.get("cap", 22), base="silver")
+    para(tf, p.get("eyebrow", ""), _FS.get("cap", 22), base=c_eyebrow)
     rect(slide, 130, 340 + 60 + 34, 120, 6, fill="gold")  # 金线
     tf = textbox(slide, 130, 340 + 60 + 34 + 50, 900, 280)
-    para(tf, p.get("title", ""), _FS.get("section-title", 118), bold=True, line_spacing=1.06)
+    para(tf, p.get("title", ""), _FS.get("section-title", 118), base=c_title,
+         bold=True, line_spacing=1.06)
     tf = textbox(slide, 130, 340 + 60 + 34 + 50 + 290, 900, 70)
     para(tf, p.get("en", ""), _FS.get("body-n", 45), base="gold")
     tf = textbox(slide, 130, 340 + 60 + 34 + 50 + 290 + 80, 900, 60)
-    para(tf, p.get("sub", ""), _FS.get("body", 34), base="silver")
+    para(tf, p.get("sub", ""), _FS.get("body", 34), base=c_sub)
     # 页脚
     rect(slide, 130, 1006 - 32, 56, 3, fill="gold")
     tf = textbox(slide, 130 + 78, 1006 - 48, 700, 40)
-    para(tf, p.get("foot", ""), _FS.get("cap", 22), base="silver")
+    para(tf, p.get("foot", ""), _FS.get("cap", 22), base=c_foot)
     if p.get("corner"):
         tf = textbox(slide, 1920 - 130 - 300, 1006 - 48, 300, 40)
-        para(tf, p["corner"], _FS.get("cap", 22), base="gold-soft", align=PP_ALIGN.RIGHT)
+        para(tf, p["corner"], _FS.get("cap", 22), base=c_corner, align=PP_ALIGN.RIGHT)
 
 def r_section(slide, p):
-    rect(slide, 0, 0, 1920, 1080, fill="bg-dark")
+    # 2026-10-06 跑即完善：曾写死深底 bg-dark，与 HTML 预览（tone light→浅底）不一致；
+    # 现按 tone＋主题深浅分支（与封面罩子修复同口径）
+    light = (p.get("tone", "light") != "dark") and _theme_is_light()
+    bg = "bg" if light else "bg-dark"
+    c_ghost_bg = bg
+    c_sub, c_foot, c_no = (("muted", "muted", "muted") if light else
+                           ("silver", "silver", "silver"))
+    rect(slide, 0, 0, 1920, 1080, fill=bg)
     ghost = p.get("ghost", "")
     if ghost:
         tf = textbox(slide, 1000, 60, 800, 800)
         para(tf, ghost, 400, base="ink", align=PP_ALIGN.RIGHT)
-        # ghost：gold 混入 bg-dark（HTML 用低透明 gold）
+        # ghost：gold 混入底色（HTML 用低透明 gold）
         for para_ in tf.paragraphs:
             for r in para_.runs:
-                r.font.color.rgb = blend(_TOKS["gold"], _TOKS["bg-dark"], 0.82)
+                r.font.color.rgb = blend(_TOKS["gold"], _TOKS[c_ghost_bg], 0.82)
     tf = textbox(slide, MX, 420, 900, 50)
     para(tf, p.get("eb", ""), _FS.get("cap", 22), base="gold", bold=True)
     rect(slide, MX, 490, 120, 6, fill="gold")
     tf = textbox(slide, MX, 530, 1050, 320)
     para(tf, p.get("title", ""), _FS.get("section-title", 118), bold=True,
-         line_spacing=1.15)
+         base=("ink" if light else "ink-dark"), line_spacing=1.15)
     if p.get("sub"):
         sub = p["sub"] if isinstance(p["sub"], str) else "<br>".join(p["sub"])
         tf = textbox(slide, MX, 880, 900, 90)
-        para(tf, sub, _FS.get("body", 34), base="silver")
+        para(tf, sub, _FS.get("body", 34), base=c_sub)
     rect(slide, MX, 1006 - 32, 56, 3, fill="gold")
     tf = textbox(slide, MX + 78, 1006 - 48, 700, 40)
-    para(tf, p.get("foot", ""), 21, base="silver")
+    para(tf, p.get("foot", ""), 21, base=c_foot)
     tf = textbox(slide, MX + CONTENT_W - 400, 64, 400, 40)
-    para(tf, p.get("no", ""), _FS.get("brow", 22), base="silver", align=PP_ALIGN.RIGHT)
+    para(tf, p.get("no", ""), _FS.get("brow", 22), base=c_no, align=PP_ALIGN.RIGHT)
 
 def _photo_left(slide, p):
     """左图（x=120,y=330,w=700,h=560）+ tag + cap，返回图片底部 y。"""

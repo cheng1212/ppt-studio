@@ -24,11 +24,16 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from 主题推荐 import 抽取意图, 推荐
 from 大纲模板 import 取模板, 意图映射
+from 意图识别 import 识别 as 识别意图_LLM
 
 
-def 生成大纲(一句话):
-    意图 = 抽取意图(一句话)
-    候选, 命中, _ = 推荐(一句话, top=3)
+def 生成大纲(一句话, 意图模式="llm"):
+    """意图模式：llm（经 意图识别.py，失败/无配置回退关键词）| 关键词（确定性）。"""
+    if 意图模式 == "llm":
+        意图 = 识别意图_LLM(一句话)
+    else:
+        意图 = 抽取意图(一句话)
+    候选, 命中, _ = 推荐(一句话, top=3, 意图=意图)
     内容类型 = 意图.get("内容类型", "数据报告")
     # 内容类型 → 模板名
     模板名 = {"数据报告": "数据报告", "课件": "课件",
@@ -59,8 +64,10 @@ def main():
     ap = argparse.ArgumentParser(prog="一句话.py")
     ap.add_argument("--输入", required=True, help="一句话需求")
     ap.add_argument("--输出", default=None, help="大纲 JSON 输出路径")
+    ap.add_argument("--意图", default="llm", choices=["llm", "关键词"],
+                    help="意图识别模式（默认 llm，失败/无配置回退关键词）")
     a = ap.parse_args()
-    out = 生成大纲(a.输入)
+    out = 生成大纲(a.输入, 意图模式=a.意图)
     txt = json.dumps(out, ensure_ascii=False, indent=2)
     if a.输出:
         io.open(a.输出, "w", encoding="utf-8").write(txt)
