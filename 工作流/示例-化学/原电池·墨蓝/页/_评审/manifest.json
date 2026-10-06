@@ -1,0 +1,61 @@
+{
+  "version": 3,
+  "backend": "gemini",
+  "target": "https://gemini.google.com/app",
+  "submit_route": "playwright-managed",
+  "submit_contract": "托管 Playwright 会话（经 agent browser 任务，保持登录态）",
+  "theme": "ink-navy",
+  "prompt_template": "/home/hatch/workspace/ppt-studio/工作流/规约/审美评审提示词.md",
+  "prompt_final": "/home/hatch/workspace/ppt-studio/工作流/示例-化学/原电池·墨蓝/页/_评审/提示词.txt",
+  "background": "# 项目背景（程序自动生成）\n- 课件：高中化学《原电池》（必修二），共 9 页\n- 用途：课堂投影播放（第一排到最后一排都要看清）；HTML/PNG 为预览，PPTX 为最终交付\n- 受众：高中生（预习）+ 老师课堂讲解\n- 主题：墨蓝·夜（深底） —— 青瓷的暗色姊妹：深墨蓝底 + 亮青强调，为投影仪和大屏而生。；关键令牌：底 #0D1B2E / 强调 #5EEAD4 / 语义橙 #E8963F / 正文 #EAF0F7\n- 页面构成：P01 封面 / P02 图文页 / P03 章节页 / P04 图文页 / P05 步骤页 / P06 数据图表 / P07 章节页 / P08 图文页 / P09 总结页\n",
+  "images": [
+    {
+      "page": "P01",
+      "path": "/home/hatch/workspace/ppt-studio/工作流/示例-化学/原电池·墨蓝/页/P01.png"
+    },
+    {
+      "page": "P02",
+      "path": "/home/hatch/workspace/ppt-studio/工作流/示例-化学/原电池·墨蓝/页/P02.png"
+    },
+    {
+      "page": "P03",
+      "path": "/home/hatch/workspace/ppt-studio/工作流/示例-化学/原电池·墨蓝/页/P03.png"
+    },
+    {
+      "page": "P04",
+      "path": "/home/hatch/workspace/ppt-studio/工作流/示例-化学/原电池·墨蓝/页/P04.png"
+    },
+    {
+      "page": "P05",
+      "path": "/home/hatch/workspace/ppt-studio/工作流/示例-化学/原电池·墨蓝/页/P05.png"
+    },
+    {
+      "page": "P06",
+      "path": "/home/hatch/workspace/ppt-studio/工作流/示例-化学/原电池·墨蓝/页/P06.png"
+    },
+    {
+      "page": "P07",
+      "path": "/home/hatch/workspace/ppt-studio/工作流/示例-化学/原电池·墨蓝/页/P07.png"
+    },
+    {
+      "page": "P08",
+      "path": "/home/hatch/workspace/ppt-studio/工作流/示例-化学/原电池·墨蓝/页/P08.png"
+    },
+    {
+      "page": "P09",
+      "path": "/home/hatch/workspace/ppt-studio/工作流/示例-化学/原电池·墨蓝/页/P09.png"
+    }
+  ],
+  "opinion_file": "/home/hatch/workspace/ppt-studio/工作流/示例-化学/原电池·墨蓝/页/_评审/评审意见.md",
+  "pages": [
+    "P01",
+    "P02",
+    "P03",
+    "P04",
+    "P05",
+    "P06",
+    "P07",
+    "P08",
+    "P09"
+  ]
+}

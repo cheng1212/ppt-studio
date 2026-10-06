@@ -1,0 +1,495 @@
+[
+  {
+    "id": "P01",
+    "tpl": "cover",
+    "bg": "cover-london.png",
+    "en": "What does he do?",
+    "eyebrow": "JUNIOR HIGH SCHOOL ENGLISH",
+    "foot": "Learn English · Open a wider world",
+    "sub": "Section A (1a–2d)",
+    "title": "Unit 5",
+    "_选型": {
+      "候选": [
+        "cover",
+        "cover_split"
+      ],
+      "关系": "结构",
+      "意图": "封面",
+      "理由": "全书封面，大图背景+压字",
+      "选中": "cover"
+    }
+  },
+  {
+    "id": "P02",
+    "tpl": "timeline",
+    "brow": "Unit 5 · What does he do?",
+    "foot": "Junior High English",
+    "kick": "CONTENTS",
+    "no": "02",
+    "nodes": [
+      {
+        "d": "情境导入",
+        "h": "Lead-in",
+        "t": "01"
+      },
+      {
+        "d": "新词学习",
+        "h": "New Words",
+        "t": "02"
+      },
+      {
+        "d": "课文解析",
+        "h": "Text Analysis",
+        "t": "03"
+      },
+      {
+        "d": "重点语法",
+        "h": "Language Points",
+        "t": "04"
+      },
+      {
+        "d": "巩固练习",
+        "h": "Practice",
+        "t": "05"
+      },
+      {
+        "d": "课堂小结",
+        "h": "Summary",
+        "t": "06"
+      }
+    ],
+    "title": "Contents",
+    "concl": "Follow me, <b>step by step</b>.",
+    "_选型": {
+      "候选": [
+        "timeline"
+      ],
+      "关系": "流程",
+      "意图": "历程",
+      "理由": "6 个环节的学习之旅，按顺序展开",
+      "选中": "timeline"
+    }
+  },
+  {
+    "id": "P03",
+    "tpl": "cover_split",
+    "en": "Lead-in",
+    "eyebrow": "UNIT 5 · PART 01",
+    "foot": "Junior High English · Unit 5",
+    "img": "leadin-boy.png",
+    "sub": "What do you want to be in the future?",
+    "title": "情境导入",
+    "_选型": {
+      "候选": [
+        "cover",
+        "cover_split"
+      ],
+      "关系": "结构",
+      "意图": "封面",
+      "理由": "章节封面变体：左文右图，人物特写",
+      "选中": "cover_split"
+    }
+  },
+  {
+    "id": "P04",
+    "tpl": "table_compare",
+    "brow": "Unit 5 · What does he do?",
+    "cols": [
+      "#",
+      "单词",
+      "中文",
+      "#",
+      "单词",
+      "中文"
+    ],
+    "concl": "New words, <b>new dreams</b>!",
+    "foot": "Junior High English",
+    "kick": "NEW WORDS",
+    "no": "04",
+    "rows": [
+      [
+        "1",
+        "doctor",
+        "医生",
+        "6",
+        "singer",
+        "歌手"
+      ],
+      [
+        "2",
+        "teacher",
+        "教师",
+        "7",
+        "driver",
+        "司机"
+      ],
+      [
+        "3",
+        "policeman",
+        "警察",
+        "8",
+        "engineer",
+        "工程师"
+      ],
+      [
+        "4",
+        "cook",
+        "厨师",
+        "9",
+        "farmer",
+        "农民"
+      ],
+      [
+        "5",
+        "worker",
+        "工人",
+        "10",
+        "office",
+        "办公室"
+      ]
+    ],
+    "title": "新词学习",
+    "_选型": {
+      "候选": [
+        "table_compare"
+      ],
+      "关系": "对照",
+      "意图": "数据对比",
+      "理由": "10 个生词的 inventory 表格，一目了然",
+      "选中": "table_compare"
+    }
+  },
+  {
+    "id": "P05",
+    "tpl": "photo_props",
+    "brow": "Unit 5 · What does he do?",
+    "foot": "Junior High English",
+    "img": "text-city.png",
+    "kick": "TEXT ANALYSIS",
+    "no": "05",
+    "rows": [
+      {
+        "b": "gold",
+        "d": "The passage is about different jobs and what people do in their daily lives.",
+        "k": "01",
+        "n": "What's the passage about?"
+      },
+      {
+        "b": "gold",
+        "d": "It introduces some common jobs and tells us how people work.",
+        "k": "02",
+        "n": "Main idea"
+      }
+    ],
+    "tag": "Reading",
+    "title": "课文解析",
+    "concl": "Read and <b>think</b>.",
+    "_选型": {
+      "候选": [
+        "photo_props"
+      ],
+      "关系": "图文",
+      "意图": "特征",
+      "理由": "两个并列要点（主旨+大意），配城市图",
+      "选中": "photo_props"
+    }
+  },
+  {
+    "id": "P06",
+    "tpl": "cards3",
+    "brow": "Unit 5 · What does he do?",
+    "cards": [
+      {
+        "b": "gold",
+        "d": "询问职业的句型",
+        "k": "句型",
+        "n": "What does he do?"
+      },
+      {
+        "b": "green",
+        "d": "他是一名医生。",
+        "k": "回答①",
+        "n": "He is a doctor."
+      },
+      {
+        "b": "green",
+        "d": "他在医院工作。",
+        "k": "回答②",
+        "n": "He works in a hospital."
+      }
+    ],
+    "concl": "公式：<b>What + does + 主语 + do?</b>",
+    "foot": "Junior High English",
+    "kick": "LANGUAGE POINTS",
+    "no": "06",
+    "title": "重点语法",
+    "_选型": {
+      "候选": [
+        "photo_props",
+        "cards3"
+      ],
+      "关系": "并列",
+      "意图": "特征",
+      "理由": "三条并列内容（句型+两种回答），横向三卡片",
+      "选中": "cards3"
+    }
+  },
+  {
+    "id": "P07",
+    "tpl": "photo_props",
+    "brow": "Unit 5 · What does he do?",
+    "foot": "Junior High English",
+    "kick": "PRACTICE",
+    "no": "07",
+    "rows": [
+      {
+        "b": "gold",
+        "d": "A. teacher　B. doctor　C. student　D. worker",
+        "k": "(1)",
+        "n": "— What does your father do? — He is a ___."
+      },
+      {
+        "b": "gold",
+        "d": "A. cook　B. teacher　C. driver　D. farmer",
+        "k": "(2)",
+        "n": "My mother is a ___. She teaches English."
+      }
+    ],
+    "title": "巩固练习",
+    "concl": "Think and <b>do</b>!",
+    "_选型": {
+      "候选": [
+        "photo_props",
+        "cards3"
+      ],
+      "关系": "并列",
+      "意图": "特征",
+      "理由": "两道并列练习题，无配图走纯文字分支",
+      "选中": "photo_props"
+    }
+  },
+  {
+    "id": "P08",
+    "tpl": "stepper",
+    "brow": "Unit 5 · What does he do?",
+    "foot": "Junior High English",
+    "kick": "SUMMARY",
+    "no": "08",
+    "steps": [
+      {
+        "d": "掌握职业类新词",
+        "t": "Learn some new words about jobs"
+      },
+      {
+        "d": "理解课文大意",
+        "t": "Understand the main idea of the passage"
+      },
+      {
+        "d": "掌握重点句型",
+        "t": "Master the key sentence \"What does he do?\""
+      },
+      {
+        "d": "学会谈论日常职业",
+        "t": "Talk about jobs in daily life"
+      }
+    ],
+    "title": "课堂小结",
+    "warn": "Jobs make the world go round.",
+    "_选型": {
+      "候选": [
+        "photo_chain",
+        "stepper"
+      ],
+      "关系": "流程",
+      "意图": "流程",
+      "理由": "4 步学习成果，横向步骤排布",
+      "选中": "stepper"
+    }
+  },
+  {
+    "id": "P09",
+    "tpl": "cover",
+    "bg": "thankyou-london.png",
+    "en": "THANK YOU",
+    "eyebrow": "UNIT 5",
+    "foot": "Learn · Grow · Be Better",
+    "sub": "See you next time!",
+    "title": "Thank You",
+    "_选型": {
+      "候选": [
+        "cover",
+        "cover_split"
+      ],
+      "关系": "结构",
+      "意图": "封面",
+      "理由": "结束页，大图背景+压字",
+      "选中": "cover"
+    }
+  },
+  {
+    "id": "P10",
+    "tpl": "photo_props",
+    "brow": "Unit 5 · What does he do?",
+    "foot": "Junior High English",
+    "img": "letstalk.png",
+    "kick": "LET'S TALK",
+    "no": "10",
+    "rows": [
+      {
+        "b": "gold",
+        "d": "",
+        "k": "A",
+        "n": "What does your mother do?"
+      },
+      {
+        "b": "green",
+        "d": "",
+        "k": "B",
+        "n": "She is a teacher."
+      },
+      {
+        "b": "gold",
+        "d": "",
+        "k": "A",
+        "n": "What does she do?"
+      },
+      {
+        "b": "green",
+        "d": "",
+        "k": "B",
+        "n": "She teaches English."
+      }
+    ],
+    "tag": "情景对话",
+    "title": "情景对话",
+    "concl": "Try it with your <b>partner</b>!",
+    "_选型": {
+      "候选": [
+        "photo_props"
+      ],
+      "关系": "图文",
+      "意图": "特征",
+      "理由": "4 轮并列对话，配学生插图",
+      "选中": "photo_props"
+    }
+  },
+  {
+    "id": "P11",
+    "tpl": "table_compare",
+    "brow": "Unit 5 · What does he do?",
+    "cap": "10 common jobs",
+    "cols": [
+      "职业",
+      "English",
+      "职业",
+      "English"
+    ],
+    "concl": "What do you want to be <b>in the future</b>?",
+    "foot": "Junior High English",
+    "img": "jobs.png",
+    "kick": "JOBS",
+    "no": "11",
+    "rows": [
+      [
+        "医生",
+        "doctor",
+        "教师",
+        "teacher"
+      ],
+      [
+        "警察",
+        "policeman",
+        "厨师",
+        "cook"
+      ],
+      [
+        "工人",
+        "worker",
+        "歌手",
+        "singer"
+      ],
+      [
+        "司机",
+        "driver",
+        "工程师",
+        "engineer"
+      ],
+      [
+        "农民",
+        "farmer",
+        "办公室职员",
+        "office worker"
+      ]
+    ],
+    "title": "常见职业",
+    "_选型": {
+      "候选": [
+        "table_compare"
+      ],
+      "关系": "图文",
+      "意图": "对比",
+      "理由": "10 个职业中英对照表，配头像拼图",
+      "选中": "table_compare"
+    }
+  },
+  {
+    "id": "P12",
+    "tpl": "flow_branch",
+    "branches": [
+      {
+        "cond": "Key words",
+        "d": "doctor / teacher / policeman …",
+        "result": "重点词汇"
+      },
+      {
+        "cond": "Key sentences",
+        "d": "What does he do? / He is a doctor.",
+        "result": "重点句型"
+      },
+      {
+        "cond": "Common jobs",
+        "d": "医生、教师、警察、厨师…",
+        "result": "常见职业"
+      }
+    ],
+    "brow": "Unit 5 · What does he do?",
+    "concl": "Jobs make the world <b>go round</b>.",
+    "foot": "Junior High English",
+    "kick": "MIND MAP",
+    "no": "12",
+    "root": {
+      "d": "职业",
+      "t": "Jobs"
+    },
+    "title": "知识导图",
+    "_选型": {
+      "候选": [
+        "flow_branch"
+      ],
+      "关系": "流程",
+      "意图": "分支",
+      "理由": "中心发散式知识导图，一根三分",
+      "选中": "flow_branch"
+    }
+  },
+  {
+    "id": "P13",
+    "tpl": "cover",
+    "bg": "final-books.png",
+    "en": "ENGLISH MAKES YOUR LIFE MORE COLORFUL",
+    "eyebrow": "UNIT 5",
+    "foot": "Junior High English",
+    "sub": "Learn English · Open a wider world",
+    "title": "English makes your life more colorful!",
+    "_选型": {
+      "候选": [
+        "cover",
+        "cover_split"
+      ],
+      "关系": "结构",
+      "意图": "封面",
+      "理由": "结语页，大图背景+压字",
+      "选中": "cover"
+    }
+  }
+]
